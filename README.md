@@ -1,6 +1,6 @@
 # EasyLib
 
-## Backlog 
+## Product Backlog 
 
 | Name | User story | How to Demo | Importance | Estimate |
 |-|-|-|-|-|
@@ -15,3 +15,27 @@
 | ... |  |  |  |  |
 | ... |  |  |  |  |
 
+## Sprint #1 Backlog
+
+|  | Sprint Backlog (Sprint Planning) |  |  |  |  | Sprint |  |  |  |  |
+|-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|  | Name | User story |  | Volunteer | Estimate | Day1 | Day2 | Day3 | Day4 | Day5 |
+| Sprint #1 | Sign up | Come studente voglio registrarmi al servizio biblioteca così da poter usufruire del servizio prestiti | Design API   |  | 2 | 0 | 0 | 0 | 0 | 0 |
+|  |  |  | Implementazione metodo REST |  | 4 | 0 | 0 | 0 | 0 | 0 |
+|  |  |  | Progettazione e implementazione DB (collezione studente) |  | 2 | 0 | 0 | 0 | 0 | 0 |
+|  |  |  | Sviluppo UI |  | 4 | 0 | 0 | 0 | 0 | 0 |
+|  |  |  | Documentazione |  | 3 | 0 | 0 | 0 | 0 | 0 |
+|  |  |  | Testing  |  | 2 | 0 | 0 | 0 | 0 | 0 |
+|  |  |  | Deploy |  | 1 | 0 | 0 | 0 | 0 | 0 |
+|  | Library catalogue | Come studente voglio accedere alla lista dei libri presenti nel catalogo cosi da poter comprendere meglio l'offerta a disposizione | ... |  |  |  |  |  |  |  |
+|  |  |  | ... |  |  |  |  |  |  |  |
+|  |  |  | ... |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  | Total |  |  |  | 18 | 0 | 0 | 0 | 0 | 0 |
+|  | Ideal |  |  |  | 18 | 14,4 | 10,8 | 7,2 | 3,6 | 0 |
+| Sprint #2 | ... | ... | ... | ... | ... |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  | Total |  |  |  |  |  |  |  |  |  |
