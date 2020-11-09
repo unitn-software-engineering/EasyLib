@@ -1,6 +1,14 @@
-
+/**
+ * This variable stores the logged in user
+ */
 var loggedUser;
 
+/**
+ * This function is called when login button is pressed.
+ * Note that this does not perform an actual authentication of the user.
+ * A student is loaded given the specified email,
+ * if it exists, the studentId is used in future calls.
+ */
 function login()
 {
     //get the form object
@@ -21,7 +29,9 @@ function login()
 
 };
 
-
+/**
+ * This function refresh the list of books
+ */
 function loadBooks() {
 
     const ul = document.getElementById('books'); // Get the list where we will place our authors
@@ -54,8 +64,9 @@ function loadBooks() {
 loadBooks();
 
 /**
- * @brief this function sends a JSON request and process a JSON response
- * @return nothing
+ * This function is called by the Take button beside each book.
+ * It create a new booklendings resource,
+ * given the book and the logged in student
  */
 function takeBook(bookUrl)
 {
@@ -73,7 +84,11 @@ function takeBook(bookUrl)
 
 };
 
-
+/**
+ * This function refresh the list of bookLendings.
+ * It only load bookLendings given the logged in student.
+ * It is called every time a book is taken of when the user login.
+ */
 function loadLendings() {
 
     const ul = document.getElementById('bookLendings'); // Get the list where we will place our lendings
@@ -106,8 +121,9 @@ function loadLendings() {
 
 
 /**
- * @brief this function sends a JSON request and process a JSON response
- * @return nothing
+ * This function is called by clicking on the "insert book" button.
+ * It creates a new book given the specified title,
+ * and force the refresh of the whole list of books.
  */
 function insertBook()
 {
