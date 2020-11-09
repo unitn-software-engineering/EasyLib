@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+<h1>EasyLib</h1>
+
+<form action="api/v1/students" method="post" name="loginform" id="loginform">
+  <span>Logged User:</span>
+  <span id="loggedUser"></span>
+  <input name="email" value="mario.rossi@unitn.com" id="loginEmail"/>
+  <button type="button" onclick="login()">LogIn</button>
+</form>
+
+<h2>Books:</h2>
+<ul id="books"></ul>
+
+<h2>Insert new book:</h2>
+
+<form action="api/v1/books" method="post" name="bookform" id="bookform">
+  <input name="title" value="title" id="bookTitle"/>
+  <button type="button" onclick="insertBook()">Insert new book</button>
+</form>
+
+<h2>Lendings:</h2>
+<ul id="bookLendings"></ul>
+
+<script src="script.js"></script> 
+    
+</body>
+
+</html>
