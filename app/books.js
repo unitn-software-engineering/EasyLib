@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./db.js');
+const Book = require('./models/book'); // get our mongoose model
 
 
 
@@ -8,8 +8,10 @@ const db = require('./db.js');
  * Resource representation based on the following the pattern: 
  * https://cloud.google.com/blog/products/application-development/api-design-why-you-should-use-links-not-keys-to-represent-relationships-in-apis
  */
-router.get('', (req, res) => {
-    let books = db.books.all().map( (book) => {
+router.get('', async (req, res) => {
+    // https://mongoosejs.com/docs/api.html#model_Model.find
+    let books = await Book.find({}).exec();
+    books = books.map( (book) => {
         return {
             self: '/api/v1/books/' + book.id,
             title: book.title
@@ -18,20 +20,26 @@ router.get('', (req, res) => {
     res.status(200).json(books);
 });
 
-router.get('/:id', (req, res) => {
-    let book = db.books.findById(req.params.id);
+router.get('/:id', async (req, res) => {
+    // https://mongoosejs.com/docs/api.html#model_Model.findById
+    let book = await Book.findById(req.params.id).exec();
     res.status(200).json({
         self: '/api/v1/books/' + book.id,
         title: book.title
     });
 });
 
-router.post('', (req, res) => {
-    let book = {
+router.post('', async (req, res) => {
+
+	let book = new Book({
         title: req.body.title
-    };
+    });
     
-    let bookId = db.books.insert(book);
+	book = await book.save();
+    
+    let bookId = book.id;
+
+    console.log('Book saved successfully');
 
     /**
      * Link to the newly created resource is returned in the Location header

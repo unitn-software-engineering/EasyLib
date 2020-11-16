@@ -1,13 +1,18 @@
 {
   "name": "easylib",
   "version": "1.0.0",
-  "description": "| Name | User story | How to Demo | Importance | Estimate |\r |-|-|-|-|-|\r | Sign up | Come studente voglio registrarmi al servizio biblioteca così da poter usufruire del servizio prestiti | Dal form di registrazione del servizio, dopo aver inserito le info richieste sullo studente e premuto il pulsante di Sign up vengo rediretto ad una pagina di Richiesta Inviata correttamente | 10 | 12 |\r | Library catalogue | Come studente voglio accedere alla lista dei libri presenti nel catalogo cosi da poter comprendere meglio l'offerta a disposizione | Dalla home del servizio, dopo aver selezionato il link del catalogo mi verra' presentata una pagina dedicata con la lista dei testi | 20 | 12 |\r | Book lending new | Come studente voglio prendere in prestito uno o più libri così che possa approfondire argomento discussi a lezione. | Dalla pagina del catalogo dei libri dopo aver selezionato uno o piu' testi con le relative checkbox e premuto il pulsante Prestito verro' rediretto ad una pagina di conferma della mia richiesta | 30 | 6 |\r | AuthZ | ... | ... | 40 | .. |\r | New Book | ... | ... | 50 | .. |\r | Book lending done | ... | ... | 60 | .. |\r | Book delete | ... | ... | 70 | .. |\r | ... |  |  |  |  |\r | ... |  |  |  |  |\r | ... |  |  |  |  |",
+  "description": "",
   "main": "index.js",
   "directories": {
-    "lib": "lib"
+    "app": "app"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true
   },
   "repository": {
     "type": "git",
@@ -20,6 +25,11 @@
   },
   "homepage": "https://github.com/2020-unitn-SE2/EasyLib#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.14"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }

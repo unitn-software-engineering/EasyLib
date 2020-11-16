@@ -1,35 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./db.js');
+const Student = require('./models/student'); // get our mongoose model
 
 
 
-router.get('', (req, res) => {
-    let students = db.students.all()
-    .filter( (entry) => {
-        if( req.query.email )
-            return entry.email == req.query.email;
-        return true;
-    }).map( (entry) => {
+router.get('', async (req, res) => {
+    // https://mongoosejs.com/docs/api.html#model_Model.find
+    let students = await Student.find({email: req.query.email}).exec();
+
+    students = students.map( (entry) => {
         return {
             self: '/api/v1/students/' + entry.id,
             email: entry.email
         }
     });
+
     res.status(200).json(students);
 });
 
-router.post('', (req, res) => {
-    let student = {
-        email: req.body.email
-    };
+router.post('', async (req, res) => {
     
+	let student = new Student({
+        email: req.body.email,
+        password: req.body.password
+    });
+
     if (!student.email || typeof student.email != 'string' || !checkIfEmailInString(student.email)) {
         res.status(400).json({ error: 'The field "email" must be a non-empty string, in email format' });
         return;
     }
-
-    let studentId = db.students.insert(student);
+    
+	student = await student.save();
+    
+    let studentId = student.id;
 
     /**
      * Link to the newly created resource is returned in the Location header
