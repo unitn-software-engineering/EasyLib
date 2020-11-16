@@ -12,13 +12,13 @@ test('GET / should return 200', async () => {
   expect(response.statusCode).toBe(200);
 });
 
-describe('Protected API /api/v1/users/me', () => {
+describe('Protected API /api/v1/students/me', () => {
 
   // Moking User.findOne method
   let userSpy;
 
   beforeAll(() => {
-    const User = require('./app/models/user');
+    const User = require('./models/student');
     userSpy = jest.spyOn(User, 'findOne').mockImplementation((criterias) => {
       return {
         id: 1212,
@@ -31,13 +31,13 @@ describe('Protected API /api/v1/users/me', () => {
     userSpy.mockRestore();
   });
   
-  test('GET /api/v1/users/me with no token should return 401', async () => {
-    const response = await request(app).get('/api/v1/users/me');
+  test('GET /api/v1/students/me with no token should return 401', async () => {
+    const response = await request(app).get('/api/v1/students/me');
     expect(response.statusCode).toBe(401);
   });
 
-  test('GET /api/v1/users/me?token=<invalid> should return 403', async () => {
-    const response = await request(app).get('/api/v1/users/me?token=123456');
+  test('GET /api/v1/students/me?token=<invalid> should return 403', async () => {
+    const response = await request(app).get('/api/v1/students/me?token=123456');
     expect(response.statusCode).toBe(403);
   });
 
@@ -52,13 +52,13 @@ describe('Protected API /api/v1/users/me', () => {
   }
   var token = jwt.sign(payload, config.superSecret, options);
       
-  test('GET /api/v1/users/me?token=<valid> should return 200', async () => {
-    const response = await request(app).get('/api/v1/users/me?token='+token);
+  test('GET /api/v1/students/me?token=<valid> should return 200', async () => {
+    const response = await request(app).get('/api/v1/students/me?token='+token);
     expect(response.statusCode).toBe(200);
   });
 
-  test('GET /api/v1/users/me?token=<valid> should return user information', async () => {
-    const response = await request(app).get('/api/v1/users/me?token='+token);
+  test('GET /api/v1/students/me?token=<valid> should return user information', async () => {
+    const response = await request(app).get('/api/v1/students/me?token='+token);
     const user = response.body;
     expect(user).toBeDefined();
     expect(user.id).toBe(1212);
