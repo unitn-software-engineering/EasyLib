@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "directories": {
-    "app": "app"
-  },
   "scripts": {
     "test": "jest",
     "start": "node index.js"

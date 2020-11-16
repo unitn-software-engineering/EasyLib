@@ -4,9 +4,28 @@ const Student = require('./models/student'); // get our mongoose model
 
 
 
-router.get('', async (req, res) => {
+router.get('/me', async (req, res) => {
+    if(!req.loggedUser) {
+        return;
+    }
+
     // https://mongoosejs.com/docs/api.html#model_Model.find
-    let students = await Student.find({email: req.query.email}).exec();
+    let student = await Student.findOne({email: req.loggedUser.email});
+
+    res.status(200).json({
+        self: '/api/v1/students/' + student.id,
+        email: student.email
+    });
+});
+
+router.get('', async (req, res) => {
+    let students;
+
+    if (req.query.email)
+        // https://mongoosejs.com/docs/api.html#model_Model.find
+        students = await Student.find({email: req.query.email}).exec();
+    else
+        students = await Student.find().exec();
 
     students = students.map( (entry) => {
         return {

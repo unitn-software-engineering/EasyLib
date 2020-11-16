@@ -17,14 +17,15 @@ describe('Protected API /api/v1/students/me', () => {
   // Moking User.findOne method
   let userSpy;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     const User = require('./models/student');
     userSpy = jest.spyOn(User, 'findOne').mockImplementation((criterias) => {
       return {
         id: 1212,
-        name: 'John'
+        email: 'John@mail.com'
       };
     });
+    await app.locals.db;
   });
 
   afterAll(() => {
@@ -43,9 +44,7 @@ describe('Protected API /api/v1/students/me', () => {
 
   // create a valid token
   var payload = {
-    id: 1212,
-    name: 'John',
-    admin: true
+    email: 'John@mail.com'
   }
   var options = {
     expiresIn: 86400 // expires in 24 hours
@@ -61,7 +60,6 @@ describe('Protected API /api/v1/students/me', () => {
     const response = await request(app).get('/api/v1/students/me?token='+token);
     const user = response.body;
     expect(user).toBeDefined();
-    expect(user.id).toBe(1212);
-    expect(user.name).toBe('John');
+    expect(user.email).toBe('John@mail.com');
   });
 });

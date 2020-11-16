@@ -4,21 +4,22 @@ const mongoose = require('mongoose');
 
 const config = require('./config'); // get our config file
 
+const authentication = require('./authentication.js');
+const tokenChecker = require('./tokenChecker.js');
+
+const students = require('./students.js');
+const books = require('./books.js');
+const booklendings = require('./booklendings.js');
 
 /**
  * Configure mongoose
  */
 // mongoose.Promise = global.Promise;
-mongoose.connect(config.database.uri, {useNewUrlParser: true, useUnifiedTopology: true})
+app.locals.db = mongoose.connect(config.database.uri, {useNewUrlParser: true, useUnifiedTopology: true})
 .then ( () => {
 	console.log("Connected to Database")
 });
 
-
-/**
- * Configure secret passcode used by jwt
- */
-app.set('superSecret', config.secret); // secret variable
 
 
 /**
@@ -37,23 +38,19 @@ app.use('/', express.static('static'));
 /**
  * Authentication routing and middleware
  */
-const authentication = require('./authentication.js');
 app.use('/api/v1/authentications', authentication);
 
-const tokenChecker = require('./tokenChecker.js');
 // Protect booklendings endpoint
 // access is restricted only to authenticated users
 // a valid token must be provided in the request
 app.use('/api/v1/booklendings', tokenChecker);
+app.use('/api/v1/students/me', tokenChecker);
 
 
 
 /**
  * Resource routing
  */
-const students = require('./students.js');
-const books = require('./books.js');
-const booklendings = require('./booklendings.js');
 
 app.use('/api/v1/books', books);
 app.use('/api/v1/students', students);

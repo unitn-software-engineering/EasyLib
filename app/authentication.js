@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Student = require('./models/student'); // get our mongoose model
-var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const config  = require('./config'); // get our config file
 
 
 // ---------------------------------------------------------
 // route to authenticate and get a new token
 // ---------------------------------------------------------
 router.post('/authentications', async function(req, res) {
-
+	
 	// find the user
 	let user = await Student.findOne({
 		email: req.body.email
@@ -32,7 +33,7 @@ router.post('/authentications', async function(req, res) {
 	var options = {
 		expiresIn: 86400 // expires in 24 hours
 	}
-	var token = jwt.sign(payload, app.get('superSecret'), options);
+	var token = jwt.sign(payload, config.superSecret, options);
 
 	res.json({
 		success: true,
