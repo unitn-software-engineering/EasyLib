@@ -1,5 +1,12 @@
 # EasyLib
 
+[![Build Status](https://travis-ci.org/2020-unitn-SE2/EasyLib.svg?branch=master)](https://travis-ci.org/2020-unitn-SE2/EasyLib)
+
+Application deployed on Heroku:
+
+https://easy-lib.herokuapp.com/
+
+
 ## Product Backlog 
 
 | Name | User story | How to Demo | Importance | Estimate |
