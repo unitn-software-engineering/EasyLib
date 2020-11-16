@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Booklending = require('./models/Booklending'); // get our mongoose model
+const Booklending = require('./models/booklending'); // get our mongoose model
 
 
 
