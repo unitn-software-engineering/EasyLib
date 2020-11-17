@@ -6,6 +6,21 @@ Application deployed on Heroku:
 
 https://easy-lib.herokuapp.com/
 
+## Authentication
+
+https://medium.com/@technospace/understanding-json-web-tokens-jwt-a9064621f2ca
+
+https://livecodestream.dev/post/2020-08-11-a-practical-guide-to-jwt-authentication-with-nodejs/
+
+
+
+## MongoDb
+
+https://mongoosejs.com/docs/
+
+
+
+# Backlog
 
 ## Product Backlog 
 
