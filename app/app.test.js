@@ -24,11 +24,13 @@ describe('Protected API /api/v1/students/me', () => {
         email: 'John@mail.com'
       };
     });
-    await app.locals.db;
+    //await app.locals.db;
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     userSpy.mockRestore();
+    //await app.locals.db.disconnect();
+    //await app.locals.db.close();
   });
   
   test('GET /api/v1/students/me with no token should return 401', async () => {
@@ -51,11 +53,13 @@ describe('Protected API /api/v1/students/me', () => {
   var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
       
   test('GET /api/v1/students/me?token=<valid> should return 200', async () => {
+    expect.assertions(1);
     const response = await request(app).get('/api/v1/students/me?token='+token);
     expect(response.statusCode).toBe(200);
   });
 
   test('GET /api/v1/students/me?token=<valid> should return user information', async () => {
+    expect.assertions(2);
     const response = await request(app).get('/api/v1/students/me?token='+token);
     const user = response.body;
     expect(user).toBeDefined();

@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 
 const authentication = require('./authentication.js');
 const tokenChecker = require('./tokenChecker.js');
@@ -8,16 +7,6 @@ const tokenChecker = require('./tokenChecker.js');
 const students = require('./students.js');
 const books = require('./books.js');
 const booklendings = require('./booklendings.js');
-
-/**
- * Configure mongoose
- */
-// mongoose.Promise = global.Promise;
-app.locals.db = mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
-.then ( () => {
-	console.log("Connected to Database")
-});
-
 
 
 /**
