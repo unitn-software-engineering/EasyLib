@@ -1,6 +1,5 @@
 const request = require('supertest');
 const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const config  = require('./config'); // get our config file
 const app     = require('./app');
 
 test('app module should be defined', () => {
@@ -49,7 +48,7 @@ describe('Protected API /api/v1/students/me', () => {
   var options = {
     expiresIn: 86400 // expires in 24 hours
   }
-  var token = jwt.sign(payload, config.superSecret, options);
+  var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
       
   test('GET /api/v1/students/me?token=<valid> should return 200', async () => {
     const response = await request(app).get('/api/v1/students/me?token='+token);

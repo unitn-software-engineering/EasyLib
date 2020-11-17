@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Student = require('./models/student'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const config  = require('./config'); // get our config file
 
 
 // ---------------------------------------------------------
@@ -33,7 +32,7 @@ router.post('/authentications', async function(req, res) {
 	var options = {
 		expiresIn: 86400 // expires in 24 hours
 	}
-	var token = jwt.sign(payload, config.superSecret, options);
+	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
 	res.json({
 		success: true,
