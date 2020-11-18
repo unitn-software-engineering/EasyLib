@@ -1,9 +1,8 @@
-var config = require('./app/config'); // get our config file
 var Student   = require('./app/models/student'); // get our mongoose model
 
 var mongoose    = require('mongoose');
 // connect to database
-mongoose.connect(config.database.uri, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 .then ( () => {
 	console.log("Connected to Database")
 });
