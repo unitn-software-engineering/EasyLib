@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 describe('GET /api/v1/booklendings', () => {
 
   beforeAll( async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(8000);
     jest.unmock('mongoose');
     let db = await  mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
     console.log('Database connected!');
@@ -44,13 +44,26 @@ describe('GET /api/v1/booklendings', () => {
       .expect(400, { error: 'Book not specified' });
   });
   
-  // test('POST /api/v1/booklendings Student does not exist', () => {
-  //   return request(app)
-  //     .post('/api/v1/booklendings')
-  //     .set('x-access-token', token)
-  //     .set('Accept', 'application/json')
-  //     .send({ student: '/api/v1/students/111', book: '/api/v1/books/0' }) // sends a JSON post body
-  //     .expect(400, { error: 'Student does not exist' });
-  // });
+  test('POST /api/v1/booklendings Student does not exist', () => {
+    return request(app)
+      .post('/api/v1/booklendings')
+      .set('x-access-token', token)
+      .set('Accept', 'application/json')
+      .send({ student: '/api/v1/students/111', book: '/api/v1/books/0' }) // sends a JSON post body
+      .expect(400, { error: 'Student does not exist' });
+  });
+  
+  test('POST /api/v1/booklendings Book does not exist', async () => {
+    return request(app)
+      .get('/api/v1/students')
+      .then( (res) => {
+        request(app)
+          .post('/api/v1/booklendings')
+          .set('x-access-token', token)
+          .set('Accept', 'application/json')
+          .send({ student: res.body.self, book: '/api/v1/books/0' }) // sends a JSON post body
+          .expect(400, { error: 'Book does not exist' });
+      });
+  });
 
 });
