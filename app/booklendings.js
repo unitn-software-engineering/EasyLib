@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Booklending = require('./models/booklending'); // get our mongoose model
+const Student = require('./models/student'); // get our mongoose model
+const Book = require('./models/book'); // get our mongoose model
 
 
 
@@ -47,22 +49,22 @@ router.post('', async (req, res) => {
     };
     
     let studentId = studentUrl.substring(studentUrl.lastIndexOf('/') + 1);
-    let student = db.students.findById(studentId);
+    let student = await Student.findById(studentId);
 
-    if(!student) {
+    if(student == null) {
         res.status(400).json({ error: 'Student does not exist' });
         return;
     };
 
     let bookId = bookUrl.substring(bookUrl.lastIndexOf('/') + 1);
-    let book = db.books.findById(bookId);
+    let book = await Book.findById(bookId).exec();
     
-    if(!book) {
+    if(book == null) {
         res.status(400).json({ error: 'Book does not exist' });
         return; 
     };
 
-    if(db.booklendings.findByBookId(bookId)) {
+    if(await Booklending.find({bookId: bookId}.exec())) {
         res.status(409).json({ error: 'Book already out' });
         return
     }

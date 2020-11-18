@@ -10,7 +10,7 @@ const Book = require('./models/book'); // get our mongoose model
  */
 router.get('', async (req, res) => {
     // https://mongoosejs.com/docs/api.html#model_Model.find
-    let books = await Book.find({}).exec();
+    let books = await Book.find({});
     books = books.map( (book) => {
         return {
             self: '/api/v1/books/' + book.id,
@@ -22,7 +22,7 @@ router.get('', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     // https://mongoosejs.com/docs/api.html#model_Model.findById
-    let book = await Book.findById(req.params.id).exec();
+    let book = await Book.findById(req.params.id);
     res.status(200).json({
         self: '/api/v1/books/' + book.id,
         title: book.title
