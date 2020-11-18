@@ -3,8 +3,15 @@
 [![Build Status](https://travis-ci.org/2020-unitn-SE2/EasyLib.svg?branch=master)](https://travis-ci.org/2020-unitn-SE2/EasyLib)
 
 Application deployed on Heroku:
-
 https://easy-lib.herokuapp.com/
+
+To start locally, use the npm script start_local, which loads environment variables from the `.env` file. Ideally, passwords in the `.env` file should not be reveled publicly, therefore the file should not be put in the repository. However, people should be able to easily re-create it starting from the `.env.example` file.
+
+```shell
+> npm run start_local
+```
+
+
 
 ## Authentication
 
@@ -20,44 +27,74 @@ https://mongoosejs.com/docs/
 
 
 
-# Backlog
+# Environment Variables
 
-## Product Backlog 
+Environment variables are used to:
+- Remove password and private configurations from the code;
+- Manage different configurations for different execution environments.
 
-| Name | User story | How to Demo | Importance | Estimate |
-|-|-|-|-|-|
-| Sign up | Come studente voglio registrarmi al servizio biblioteca così da poter usufruire del servizio prestiti | Dal form di registrazione del servizio, dopo aver inserito le info richieste sullo studente e premuto il pulsante di Sign up vengo rediretto ad una pagina di Richiesta Inviata correttamente | 10 | 12 |
-| Library catalogue | Come studente voglio accedere alla lista dei libri presenti nel catalogo cosi da poter comprendere meglio l'offerta a disposizione | Dalla home del servizio, dopo aver selezionato il link del catalogo mi verra' presentata una pagina dedicata con la lista dei testi | 20 | 12 |
-| Book lending new | Come studente voglio prendere in prestito uno o più libri così che possa approfondire argomento discussi a lezione. | Dalla pagina del catalogo dei libri dopo aver selezionato uno o piu' testi con le relative checkbox e premuto il pulsante Prestito verro' rediretto ad una pagina di conferma della mia richiesta | 30 | 6 |
-| AuthZ | ... | ... | 40 | .. |
-| New Book | ... | ... | 50 | .. |
-| Book lending done | ... | ... | 60 | .. |
-| Book delete | ... | ... | 70 | .. |
-| ... |  |  |  |  |
-| ... |  |  |  |  |
-| ... |  |  |  |  |
+## Local Environment Variables
 
-## Sprint #1 Backlog
+https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-with-environment-variables-2da8cdf6e786
 
-|  | Sprint Backlog (Sprint Planning) |  |  |  |  | Sprint |  |  |  |  |
-|-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|  | Name | User story |  | Volunteer | Estimate | Day1 | Day2 | Day3 | Day4 | Day5 |
-| Sprint #1 | Sign up | Come studente voglio registrarmi al servizio biblioteca così da poter usufruire del servizio prestiti | Design API   |  | 2 | 0 | 0 | 0 | 0 | 0 |
-|  |  |  | Implementazione metodo REST |  | 4 | 0 | 0 | 0 | 0 | 0 |
-|  |  |  | Progettazione e implementazione DB (collezione studente) |  | 2 | 0 | 0 | 0 | 0 | 0 |
-|  |  |  | Sviluppo UI |  | 4 | 0 | 0 | 0 | 0 | 0 |
-|  |  |  | Documentazione |  | 3 | 0 | 0 | 0 | 0 | 0 |
-|  |  |  | Testing  |  | 2 | 0 | 0 | 0 | 0 | 0 |
-|  |  |  | Deploy |  | 1 | 0 | 0 | 0 | 0 | 0 |
-|  | Library catalogue | Come studente voglio accedere alla lista dei libri presenti nel catalogo cosi da poter comprendere meglio l'offerta a disposizione | ... |  |  |  |  |  |  |  |
-|  |  |  | ... |  |  |  |  |  |  |  |
-|  |  |  | ... |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |  |  |  |
-|  | Total |  |  |  | 18 | 0 | 0 | 0 | 0 | 0 |
-|  | Ideal |  |  |  | 18 | 14,4 | 10,8 | 7,2 | 3,6 | 0 |
-| Sprint #2 | ... | ... | ... | ... | ... |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |  |  |  |
-|  | Total |  |  |  |  |  |  |  |  |  |
+Locally, environment variables can be set at system level or passed in the command line:
+
+```shell
+> PORT=8626 node server.js
+```
+
+Alternatively, environment variables can be managed in a `.env` file, which ideally should not be put under version control. However, it is useful to provide a `.env.example` file with the list of all variables.
+
+The .env file can be pre-loaded using the `dotenv` module.
+
+```shell
+> npm install dotenv
+> node -r dotenv/config server.js
+```
+
+A script can be defined in the package.json:
+
+```javascript
+scripts: {
+    "test": "jest",
+    "start": "node index.js",
+    "start_local": "node -r dotenv/config server.js"
+}
+```
+
+It can be run by:
+
+```shell
+> npm run start_local
+```
+
+### Loading .env when using Jest
+
+https://stackoverflow.com/questions/48033841/test-process-env-with-jest
+
+When using Jest locally, a setup file can be used to load variablem from `.env` file with `dotenv`.
+
+Jest configuration file `setEnvVars.js`:
+```javascript
+require("dotenv").config()
+```
+
+The `setupFiles` option can be specified in `jest.config.js` or directly in the `package.json`.
+
+https://jestjs.io/docs/en/configuration#setupfiles-array
+
+
+## Cloud services Environment Variables
+
+On Heroku, TravisCI, or other cloud services, it is possible to manually set env variables.
+
+- Heroku https://devcenter.heroku.com/articles/config-vars
+- TravisCI https://docs.travis-ci.com/user/environment-variables/
+
+When HerokuCLI is used to run the app locally, it automatically load env variables from .env file.
+
+https://devcenter.heroku.com/articles/heroku-local#copy-heroku-config-vars-to-your-local-env-file
+
+```shell
+> heroku local web
+```

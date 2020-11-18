@@ -16,7 +16,9 @@ describe('Protected API /api/v1/students/me', () => {
   // Moking User.findOne method
   let userSpy;
 
-  beforeAll(async () => {
+  let db;
+
+  beforeAll( () => {
     const User = require('./models/student');
     userSpy = jest.spyOn(User, 'findOne').mockImplementation((criterias) => {
       return {
@@ -24,7 +26,8 @@ describe('Protected API /api/v1/students/me', () => {
         email: 'John@mail.com'
       };
     });
-    //await app.locals.db;
+    // db = mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+    // return db;
   });
 
   afterAll(async () => {
