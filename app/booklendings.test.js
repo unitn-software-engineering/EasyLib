@@ -8,16 +8,19 @@ const mongoose = require('mongoose');
 
 describe('GET /api/v1/booklendings', () => {
 
+  let connection;
+
   beforeAll( async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(8000);
     jest.unmock('mongoose');
-    let db = await  mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+    connection = await  mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
     console.log('Database connected!');
-    return db; // Important to return back the db connection Promise!
+    //return connection; // Need to return the Promise db connection?
   });
 
   afterAll( () => {
-    return mongoose.connection.close();
+    mongoose.connection.close(true);
+    console.log("Database connection closed");
   });
   
   // create a valid token
@@ -44,13 +47,28 @@ describe('GET /api/v1/booklendings', () => {
       .expect(400, { error: 'Book not specified' });
   });
   
-  // test('POST /api/v1/booklendings Student does not exist', () => {
-  //   return request(app)
-  //     .post('/api/v1/booklendings')
-  //     .set('x-access-token', token)
-  //     .set('Accept', 'application/json')
-  //     .send({ student: '/api/v1/students/111', book: '/api/v1/books/0' }) // sends a JSON post body
-  //     .expect(400, { error: 'Student does not exist' });
-  // });
+  test('POST /api/v1/booklendings Student does not exist', () => {
+    return request(app)
+      .post('/api/v1/booklendings')
+      .set('x-access-token', token)
+      .set('Accept', 'application/json')
+      .send({ student: '/api/v1/students/111', book: '/api/v1/books/0' }) // sends a JSON post body
+      .expect(400, { error: 'Student does not exist' });
+  });
+  
+  test('POST /api/v1/booklendings Book does not exist', () => {
+    return request(app)
+      .get('/api/v1/students')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then( (res) => {
+        return request(app)
+          .post('/api/v1/booklendings')
+          .set('x-access-token', token)
+          .set('Accept', 'application/json')
+          .send({ student: res.body[0].self, book: '/api/v1/books/0' }) // sends a JSON post body
+          .expect(400, { error: 'Book does not exist' });
+      });
+  });
 
 });

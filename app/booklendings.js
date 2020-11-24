@@ -49,7 +49,13 @@ router.post('', async (req, res) => {
     };
     
     let studentId = studentUrl.substring(studentUrl.lastIndexOf('/') + 1);
-    let student = await Student.findById(studentId);
+    let student = null;
+    try {
+        student = await Student.findById(studentId);
+    } catch (error) {
+        // This catch CastError when studentId cannot be casted to mongoose ObjectId
+        // CastError: Cast to ObjectId failed for value "11" at path "_id" for model "Student"
+    }
 
     if(student == null) {
         res.status(400).json({ error: 'Student does not exist' });
@@ -57,7 +63,12 @@ router.post('', async (req, res) => {
     };
 
     let bookId = bookUrl.substring(bookUrl.lastIndexOf('/') + 1);
-    let book = await Book.findById(bookId).exec();
+    let book = null;
+    try {
+        book = await Book.findById(bookId).exec();
+    } catch (error) {
+        // CastError: Cast to ObjectId failed for value "11" at path "_id" for model "Book"
+    }
     
     if(book == null) {
         res.status(400).json({ error: 'Book does not exist' });
