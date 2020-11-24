@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 // ---------------------------------------------------------
 // route to authenticate and get a new token
 // ---------------------------------------------------------
-router.post('/authentications', async function(req, res) {
+router.post('.', async function(req, res) {
 	
 	// find the user
 	let user = await Student.findOne({
