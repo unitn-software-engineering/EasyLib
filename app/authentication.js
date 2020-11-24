@@ -26,7 +26,8 @@ router.post('', async function(req, res) {
 	
 	// if user is found and password is right create a token
 	var payload = {
-		email: user.email
+		email: user.email,
+		id: user._id
 		// other data encrypted in the token	
 	}
 	var options = {
@@ -37,7 +38,10 @@ router.post('', async function(req, res) {
 	res.json({
 		success: true,
 		message: 'Enjoy your token!',
-		token: token
+		token: token,
+		email: user.email,
+		id: user._id,
+		self: "api/v1/" + user._id
 	});
 
 });

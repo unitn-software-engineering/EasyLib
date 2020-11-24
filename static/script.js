@@ -1,7 +1,7 @@
 /**
  * This variable stores the logged in user
  */
-var loggedUser;
+var loggedUser = {};
 
 /**
  * This function is called when login button is pressed.
@@ -13,14 +13,22 @@ function login()
 {
     //get the form object
     var email = document.getElementById("loginEmail").value;
+    var password = document.getElementById("loginPassword").value;
     // console.log(email);
 
-    fetch('../api/v1/students?email=' + email)
+    fetch('../api/v1/authentications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( { email: email, password: password } ),
+    })
     .then((resp) => resp.json()) // Transform the data into json
     .then(function(data) { // Here you get the data to modify as you please
         //console.log(data);
-        loggedUser = data[0];
-        loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
+        loggedUser.token = data.token;
+        loggedUser.email = data.email;
+        loggedUser.id = data.id;
+        loggedUser.self = data.self;
+        // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
         document.getElementById("loggedUser").innerHTML = loggedUser.email;
         loadLendings();
         return;
@@ -72,7 +80,10 @@ function takeBook(bookUrl)
 {
     fetch('../api/v1/booklendings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': loggedUser.token
+        },
         body: JSON.stringify( { student: loggedUser.self, book: bookUrl } ),
     })
     .then((resp) => {
@@ -95,7 +106,7 @@ function loadLendings() {
 
     ul.innerHTML = '';
 
-    fetch('../api/v1/booklendings?studentId=' + loggedUser.id)
+    fetch('../api/v1/booklendings?studentId=' + loggedUser.id + '&token=' + loggedUser.token)
     .then((resp) => resp.json()) // Transform the data into json
     .then(function(data) { // Here you get the data to modify as you please
         
