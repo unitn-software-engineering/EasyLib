@@ -25,10 +25,10 @@ Use this to manually encode and decode a token:
 Implementation in EasyLib:
 
 ```javascript
-router.post('/authentications', async function(req, res) {
+app.post('/api/v1/authentications', async function(req, res) {
 	
 	// find the user
-	let user = await Student.findOne({ email: req.body.email }).exec;
+	let user = await Student.findOne({ email: req.body.email }).exec();
 	
 	// user not found
 	if (!user)
