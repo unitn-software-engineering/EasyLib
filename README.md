@@ -17,6 +17,93 @@ To start locally, use the npm script start_local, which loads environment variab
 
 https://medium.com/@technospace/understanding-json-web-tokens-jwt-a9064621f2ca
 
+![Simple procedure on JWT token generation and validation at the same server](https://miro.medium.com/max/700/1*7T41R0dSLEzssIXPHpvimQ.png)
+
+Use this to manually encode and decode a token:
+- https://jwt.io/
+
+Implementation in EasyLib:
+
+```javascript
+app.post('/api/v1/authentications', async function(req, res) {
+	
+	// find the user
+	let user = await Student.findOne({ email: req.body.email }).exec();
+	
+	// user not found
+	if (!user)
+        res.json({ success: false, message: 'Authentication failed. User not found.' });
+	
+	// check if password matches
+	if (user.password != req.body.password)
+		res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+	
+	// if user is found and password is right create a token
+	var token = jwt.sign({ email: user.email }, process.env.SUPER_SECRET, { expiresIn: 86400 });
+
+	res.json({
+		success: true,
+		message: 'Enjoy your token!',
+		token: token
+	});
+
+});
+}
+```
+
+File tokenChecker.js:
+```javascript
+const tokenChecker = function(req, res, next) {
+	
+	// check header or url parameters or post parameters for token
+	var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+	// if there is no token
+	if (!token) {
+		return res.status(401).send({ 
+			success: false,
+			message: 'No token provided.'
+		});
+	}
+
+	// decode token, verifies secret and checks exp
+	jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded) {			
+		if (err) {
+			return res.status(403).send({
+				success: false,
+				message: 'Failed to authenticate token.'
+			});		
+		} else {
+			// if everything is good, save to request for use in other routes
+			req.loggedUser = decoded;
+			next();
+		}
+	});
+	
+};
+
+module.exports = tokenChecker
+```
+
+To protect endpoints, we can put the tockenChecker.js middelware before all route handlers that we want to protect:
+```javascript
+app.use('/api/v1/authentications', authentication);
+...
+// requests handled until here are not authenticated
+app.use('', tokenChecker);
+// request with no valid token stop here
+// requests that goes through the tokenChecker have the field `req.loggedUser` set to the decoded token
+```
+Or we can protect specific endpoints, by associating the tockenChecker with specific url:
+```javascript
+app.use('/api/v1/booklendings', tokenChecker);
+...
+// only requests matching '/api/v1/booklendings' have been authenticated by the tokenChecker
+app.use('/api/v1/booklendings', booklendings);
+// Requests on '/api/v1/students' are not authenticated
+app.use('/api/v1/students', books);
+```
+
 https://livecodestream.dev/post/2020-08-11-a-practical-guide-to-jwt-authentication-with-nodejs/
 
 

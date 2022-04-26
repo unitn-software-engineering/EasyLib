@@ -61,7 +61,7 @@ router.post('', async (req, res) => {
         res.status(400).json({ error: 'Student does not exist' });
         return;
     };
-
+    
     let bookId = bookUrl.substring(bookUrl.lastIndexOf('/') + 1);
     let book = null;
     try {
@@ -75,7 +75,7 @@ router.post('', async (req, res) => {
         return; 
     };
 
-    if(await Booklending.find({bookId: bookId}.exec())) {
+    if( ( await Booklending.find({bookId: bookId}).exec() ).lenght > 0) {
         res.status(409).json({ error: 'Book already out' });
         return
     }
