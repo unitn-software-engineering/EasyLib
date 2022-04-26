@@ -92,7 +92,7 @@ components:
         title:
           type: string
           description: 'Title of the book'
-        deadline:
+        author:
           type: string
           description: 'Author of the book'
         ISBN:
