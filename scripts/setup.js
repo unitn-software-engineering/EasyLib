@@ -1,4 +1,5 @@
-var Student   = require('./app/models/student'); // get our mongoose model
+require('dotenv').config()
+var Student   = require('../app/models/student'); // get our mongoose model
 
 var mongoose    = require('mongoose');
 // connect to database

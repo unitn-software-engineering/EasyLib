@@ -29,6 +29,18 @@ router.get('/:id', async (req, res) => {
     });
 });
 
+router.delete('/:id', async (req, res) => {
+    let book = await Book.findById(req.params.id).exec();
+    if (!book) {
+        res.status(404).send()
+        console.log('book not found')
+        return;
+    }
+    await book.deleteOne()
+    console.log('book removed')
+    res.status(204).send()
+});
+
 router.post('', async (req, res) => {
 
 	let book = new Book({

@@ -94,4 +94,18 @@ router.post('', async (req, res) => {
 
 
 
+router.delete('/:id', async (req, res) => {
+    let lending = await Booklending.findById(req.params.id).exec();
+    if (!lending) {
+        res.status(404).send()
+        console.log('lending not found')
+        return;
+    }
+    await lending.deleteOne()
+    console.log('lending removed')
+    res.status(204).send()
+});
+
+
+
 module.exports = router;
