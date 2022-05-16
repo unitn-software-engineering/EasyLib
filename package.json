@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "start": "node index.js",
-    "start_local": "node -r dotenv/config index.js"
+    "start_local": "echo use: $ npm run dev",
+    "dev": "node -r dotenv/config index.js"
   },
   "jest": {
     "verbose": true,

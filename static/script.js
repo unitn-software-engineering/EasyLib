@@ -29,7 +29,7 @@ function login()
         loggedUser.id = data.id;
         loggedUser.self = data.self;
         // loggedUser.id = loggedUser.self.substring(loggedUser.self.lastIndexOf('/') + 1);
-        document.getElementById("loggedUser").innerHTML = loggedUser.email;
+        document.getElementById("loggedUser").textContent = loggedUser.email;
         loadLendings();
         return;
     })
@@ -44,7 +44,7 @@ function loadBooks() {
 
     const ul = document.getElementById('books'); // Get the list where we will place our authors
 
-    ul.innerHTML = '';
+    ul.textContent = '';
 
     fetch('../api/v1/books')
     .then((resp) => resp.json()) // Transform the data into json
@@ -58,10 +58,19 @@ function loadBooks() {
             
             let li = document.createElement('li');
             let span = document.createElement('span');
-            span.innerHTML = `<a href="${book.self}">${book.title}</a>`;
-            span.innerHTML += `<button type="button" onclick="takeBook('${book.self}')">Take the book</button>`
+            // span.innerHTML = `<a href="${book.self}">${book.title}</a>`;
+            let a = document.createElement('a');
+            a.href = book.self
+            a.textContent = book.title;
+            // span.innerHTML += `<button type="button" onclick="takeBook('${book.self}')">Take the book</button>`
+            let button = document.createElement('button');
+            button.type = 'button'
+            button.onclick = ()=>takeBook(book.self)
+            button.textContent = 'Take the book';
             
             // Append all our elements
+            span.appendChild(a);
+            span.appendChild(button);
             li.appendChild(span);
             ul.appendChild(li);
         })
@@ -118,10 +127,13 @@ function loadLendings() {
             
             let li = document.createElement('li');
             let span = document.createElement('span');
-            span.innerHTML = `<a href="${entry.self}">${entry.book}</a>`;
-            // span.innerHTML += `<button type="button" onclick="takeBook('${book.self}')">Take the book</button>`
+            // span.innerHTML = `<a href="${entry.self}">${entry.book}</a>`;
+            let a = document.createElement('a');
+            a.href = entry.self
+            a.textContent = entry.book;
             
             // Append all our elements
+            span.appendChild(a);
             li.appendChild(span);
             ul.appendChild(li);
         })
