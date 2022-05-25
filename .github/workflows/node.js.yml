@@ -21,6 +21,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: create env file
+      run: |
+        touch .env
+        echo DB_URL=${{ secrets.DB_URL }} >> .env
+        echo SUPER_SECRET=${{ secrets.SUPER_SECRET }} >> .env
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
