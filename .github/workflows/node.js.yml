@@ -14,11 +14,13 @@ jobs:
 
     runs-on: ubuntu-latest
     
-    env:
-      SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
-      DB_URL: ${{ secrets.DB_URL }}
+    # This is used to load Environment-level secrets, from the specified environment.
+    # Instead, repository secrets are loaded by default.
+    environment: production
     
-    environment: easy-lib
+    env:
+      SUPER_SECRET: ${{ secrets.SUPER_SECRET }} # Must be set as a GitHub secret
+      DB_URL: ${{ secrets.DB_URL }} # Must be set as a GitHub secret
 
     strategy:
       matrix:
@@ -27,10 +29,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Create .env with Github Secrets and run script
-      run: |
-        touch .env
-        echo SUPER_SECRET=$SUPER_SECRET >> .env
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
