@@ -30,8 +30,7 @@ jobs:
       run: |
         touch .env
         echo SUPER_SECRET=$SUPER_SECRET >> .env
-      env:
-        SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
+        echo DB_URL=$DB_URL >> .env
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
