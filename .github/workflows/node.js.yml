@@ -13,6 +13,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    env:
+      SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
+    
+    environment: easy-lib
 
     strategy:
       matrix:
@@ -25,10 +30,8 @@ jobs:
       run: |
         touch .env
         echo SUPER_SECRET=$SUPER_SECRET >> .env
-        echo DB_URL=$DB_URL >> .env
       env:
         SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
-        DB_URL: ${{ secrets.DB_URL }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
