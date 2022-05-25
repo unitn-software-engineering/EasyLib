@@ -21,11 +21,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: create env file
+    - name: Create .env with Github Secrets and run script
       run: |
         touch .env
-        echo DB_URL=${{ secrets.DB_URL }} >> .env
-        echo SUPER_SECRET=${{ secrets.SUPER_SECRET }} >> .env
+        echo SUPER_SECRET=$SUPER_SECRET >> .env
+        echo DB_URL=$DB_URL >> .env
+      env:
+        SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
+        DB_URL: ${{ secrets.DB_URL }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
