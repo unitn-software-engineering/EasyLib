@@ -43,6 +43,7 @@ jobs:
     needs: test
     steps:
     - uses: actions/checkout@v2
+    # https://github.com/marketplace/actions/deploy-to-heroku#procfile-passing
     - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
