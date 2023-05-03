@@ -3,6 +3,8 @@
  */
 var loggedUser = {};
 
+loggedUser.token = decodeURIComponent(document.cookie).split(';').find(s=>s.split('=')).split('=')[1]
+
 /**
  * This function is called when login button is pressed.
  * Note that this does not perform an actual authentication of the user.

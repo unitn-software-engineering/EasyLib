@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test_local": "jest --setupFiles dotenv/config",
     "start": "node index.js",
     "start_local": "echo use: $ npm run dev",
     "dev": "node -r dotenv/config index.js"
@@ -24,10 +25,14 @@
   },
   "homepage": "https://github.com/2020-unitn-SE2/EasyLib#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.14"
+    "mongoose": "^5.10.14",
+    "passport": "^0.6.0",
+    "passport-google-oidc": "^0.1.0"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",

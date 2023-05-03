@@ -8,14 +8,11 @@ const mongoose = require('mongoose');
 
 describe('GET /api/v1/booklendings', () => {
 
-  let connection;
-
   beforeAll( async () => {
     jest.setTimeout(8000);
     jest.unmock('mongoose');
-    connection = await  mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+    app.locals.db = await mongoose.connect(process.env.DB_URL);
     console.log('Database connected!');
-    //return connection; // Need to return the Promise db connection?
   });
 
   afterAll( () => {
