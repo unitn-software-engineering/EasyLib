@@ -17,6 +17,7 @@ router.post('', async function(req, res) {
 	// user not found
 	if (!user) {
 		res.json({ success: false, message: 'Authentication failed. User not found.' });
+		return;
 	}
 	
 	// check if password matches
