@@ -27,7 +27,7 @@
     "cors": "^2.8.5",
     "easylibvue": "github:unitn-software-engineering/EasyLibVue",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.10.14"
   },
   "devDependencies": {
