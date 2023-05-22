@@ -39,19 +39,13 @@ jobs:
     - run: npm test
   
   deploy:
-    name: Wait for Deploy
+    name: Deploy to Render
     runs-on: ubuntu-latest
-    needs: test
     steps:
-      - name: Wait for Render Deployment
-        uses: bounceapp/render-action@0.6.0
-        # https://github.com/marketplace/actions/render-github-action
+      - name: Trigger deployment
+        uses: sws2apps/render-deployment@main #consider using pin for dependabot auto update
         with:
-          render-token: ${{ secrets.RENDER_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          service-id: ${{ secrets.RENDER_ID }}
-          # srv-xxxxxxxxxxxxxxxxxxxx
-          retries: 20
-          wait: 16000
-          sleep: 30000
+          serviceId: ${{ secrets.RENDER_ID }}
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          multipleDeployment: false #optional, default true
        
