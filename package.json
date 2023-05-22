@@ -25,7 +25,6 @@
   "homepage": "https://github.com/2020-unitn-SE2/EasyLib#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "easylibvue": "github:unitn-software-engineering/EasyLibVue",
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.10.14"
