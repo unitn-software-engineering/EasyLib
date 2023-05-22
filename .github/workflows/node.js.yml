@@ -41,6 +41,7 @@ jobs:
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Trigger deployment
         uses: sws2apps/render-deployment@main #consider using pin for dependabot auto update
