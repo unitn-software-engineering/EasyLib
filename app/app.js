@@ -96,4 +96,12 @@ app.use((req, res) => {
 
 
 
+/* Default error handler */
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke!' });
+});
+
+
+
 module.exports = app;
