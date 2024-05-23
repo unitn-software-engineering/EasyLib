@@ -33,27 +33,39 @@ router.post('', async function(req, res) {
 	if ( req.body.googleToken ) {
 		const payload = await verify( req.body.googleToken ).catch(console.error);
 		console.log(payload);
-		user = { email: payload['email'], _id: payload['sub'] };
+
+		user = await Student.findOne({ email: payload['email'] }).exec();
+		if ( ! user ) {
+			user = new Student({
+				email: payload['email'],
+				password: 'default-google-password-to-be-changed'
+			});
+			await user.save().exec();
+			console.log('Student created after login with google');
+			
+		}
+		
 	}
 	else {
 		// find the user in the local db
 		user = await Student.findOne({
 			email: req.body.email
 		}).exec();
+	
+		// local user not found
+		if (!user) {
+			res.json({ success: false, message: 'Authentication failed. User not found.' });
+			return;
+		}
+	
+		// check if password matches
+		if (user.password != req.body.password) {
+			res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+			return;
+		}
 	}
 	
-	// user not found
-	if (!user) {
-		res.json({ success: false, message: 'Authentication failed. User not found.' });
-		return;
-	}
-	
-	// check if password matches
-	if (user.password != req.body.password) {
-		res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-	}
-	
-	// if user is found and password is right create a token
+	// if user is found or created create a token
 	var payload = {
 		email: user.email,
 		id: user._id
