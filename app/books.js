@@ -20,9 +20,20 @@ router.get('', async (req, res) => {
     res.status(200).json(books);
 });
 
-router.get('/:id', async (req, res) => {
+router.use('/:id', async (req, res, next) => {
     // https://mongoosejs.com/docs/api.html#model_Model.findById
-    let book = await Book.findById(req.params.id);
+    let book = await Book.findById(req.params.id).exec();
+    if (!book) {
+        res.status(404).send()
+        console.log('book not found')
+        return;
+    }
+    req['book'] = book;
+    next()
+});
+
+router.get('/:id', async (req, res) => {
+    let book = req['book'];
     res.status(200).json({
         self: '/api/v1/books/' + book.id,
         title: book.title
@@ -30,13 +41,8 @@ router.get('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-    let book = await Book.findById(req.params.id).exec();
-    if (!book) {
-        res.status(404).send()
-        console.log('book not found')
-        return;
-    }
-    await book.deleteOne()
+    let book = req['book'];
+    await Book.deleteOne({ _id: req.params.id });
     console.log('book removed')
     res.status(204).send()
 });

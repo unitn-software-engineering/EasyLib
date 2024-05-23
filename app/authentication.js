@@ -4,15 +4,15 @@ const Student = require('./models/student'); // get our mongoose model
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 const {OAuth2Client} = require('google-auth-library');
 
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 /**
  * https://developers.google.com/identity/gsi/web/guides/verify-google-id-token?hl=it#node.js
 */
-const client = new OAuth2Client();
+const client = new OAuth2Client( GOOGLE_CLIENT_ID );
 async function verify( token ) {
 	const ticket = await client.verifyIdToken({
 		idToken: token,
-		audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+		// audience: GOOGLE_CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
 		// Or, if multiple clients access the backend:
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
 	});
@@ -32,6 +32,7 @@ router.post('', async function(req, res) {
 
 	if ( req.body.googleToken ) {
 		const payload = await verify( req.body.googleToken ).catch(console.error);
+		console.log(payload);
 		user = { email: payload['email'], _id: payload['sub'] };
 	}
 	else {
