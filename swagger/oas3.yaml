@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: EasyLib OpenAPI 3.0
+  description: API for managing book lendings.
+  license:
+    name: MIT
+  version: "1"
+servers:
+- url: http://localhost:8000/api/v1
+  description: Localhost
+paths:
+  /students:
+    post:
+      summary: Register a new student
+      description: Creates a new student in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/students_body'
+      responses:
+        "201":
+          description: User created. Link in the Location header
+          headers:
+            Location:
+              description: Link to the newly created student.
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /books:
+    get:
+      summary: View all books
+      description: Gets the list of books.
+      responses:
+        "200":
+          description: Collection of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+  /booklendings:
+    post:
+      summary: Borrow a book
+      description: Creates a new booklending.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booklending'
+      responses:
+        "201":
+          description: Booklending created. Link in the Location header
+          headers:
+            Location:
+              description: Link to the newly created booklending.
+              style: simple
+              explode: false
+              schema:
+                type: string
+components:
+  schemas:
+    Student:
+      required:
+      - email
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the user
+        email:
+          type: string
+          description: Email address of the user
+    Book:
+      required:
+      - ISBN
+      - author
+      - status
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the book
+        deadline:
+          type: string
+          description: Author of the book
+        ISBN:
+          type: string
+          description: ISBN of the book
+        status:
+          type: string
+          description: Tells whether the book is currently available or not
+          enum:
+          - available
+          - lended
+    Booklending:
+      required:
+      - book
+      - student
+      type: object
+      properties:
+        user:
+          type: string
+          description: Link to the user
+        book:
+          type: integer
+          description: Link to the book
+    students_body:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email address of the student
