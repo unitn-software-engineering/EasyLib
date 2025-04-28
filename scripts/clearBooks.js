@@ -5,7 +5,7 @@ var Books   = require('../app/models/book'); // get our mongoose model
 
 var mongoose    = require('mongoose');
 // connect to database
-mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.DB_URL)
 .then ( async () => {
 	console.log("Connected to Database")
 	

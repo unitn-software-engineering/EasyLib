@@ -13,10 +13,6 @@
     "clearBooklendings": "dotenv -- sh -c 'mongosh $DB_URL --eval \"db.booklendings.deleteMany({})\"'",
     "clearBooks": "node ./scripts/clearBooks.js"
   },
-  "jest": {
-    "verbose": true,
-    "collectCoverage": true
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/2020-unitn-SE2/EasyLib.git"
@@ -32,15 +28,18 @@
     "express": "^4.17.1",
     "google-auth-library": "^9.10.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^5.10.14"
+    "mongoose": "^8.14.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@vitejs/plugin-vue": "^2.3.1",
+    "@vitejs/plugin-vue": "^5.2.3",
     "dotenv": "^8.2.0",
     "dotenv-cli": "^8.0.0",
-    "jest": "^26.6.3",
+    "jest": "^29.7.0",
     "supertest": "^6.0.1",
-    "vite": "^2.9.5"
+    "vite": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
