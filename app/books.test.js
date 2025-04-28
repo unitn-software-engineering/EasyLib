@@ -20,14 +20,18 @@ describe('GET /api/v1/books', () => {
       }];
     });
     bookSpyFindById = jest.spyOn(Book, 'findById').mockImplementation((id) => {
-      if (id==1010)
-        return {
-          id: 1010,
-          title: 'Software Engineering 2'
-        };
-      else
-        return {};
-    });
+      return {
+        exec: () => {
+          if (id==1010)
+            return {
+              id: 1010,
+              title: 'Software Engineering 2'
+            };
+          else
+            return {};
+        }
+      };
+    })
   });
 
   afterAll(async () => {
