@@ -55,7 +55,7 @@ router.post('', async (req, res) => {
     
 	book = await book.save();
     
-    let bookId = book.id;
+    let bookId = book._id;
 
     console.log('Book saved successfully');
 

@@ -54,13 +54,13 @@ router.post('', async function(req, res) {
 	
 		// local user not found
 		if (!user) {
-			res.json({ success: false, message: 'Authentication failed. User not found.' });
+			res.status(401).json({ success: false, message: 'Authentication failed. User not found.' });
 			return;
 		}
 	
 		// check if password matches
 		if (user.password != req.body.password) {
-			res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+			res.status(401).json({ success: false, message: 'Authentication failed. Wrong password.' });
 			return;
 		}
 	}

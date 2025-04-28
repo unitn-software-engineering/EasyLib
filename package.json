@@ -8,6 +8,9 @@
     "start": "node index.js",
     "start_local": "echo use: $ npm run dev",
     "dev": "node -r dotenv/config index.js",
+    "show-db-url": "dotenv -p DB_URL",
+    "mongosh": "dotenv -- sh -c 'mongosh $DB_URL '",
+    "clearBooklendings": "dotenv -- sh -c 'mongosh $DB_URL --eval \"db.booklendings.deleteMany({})\"'",
     "clearBooks": "node ./scripts/clearBooks.js"
   },
   "jest": {
@@ -35,6 +38,7 @@
     "@types/jest": "^29.5.12",
     "@vitejs/plugin-vue": "^2.3.1",
     "dotenv": "^8.2.0",
+    "dotenv-cli": "^8.0.0",
     "jest": "^26.6.3",
     "supertest": "^6.0.1",
     "vite": "^2.9.5"

@@ -51,7 +51,7 @@ router.post('', async (req, res) => {
     
 	student = await student.save();
     
-    let studentId = student.id;
+    let studentId = student._id;
 
     /**
      * Link to the newly created resource is returned in the Location header

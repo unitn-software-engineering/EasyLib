@@ -130,7 +130,7 @@ function loadLendings() {
             // span.innerHTML = `<a href="${entry.self}">${entry.book}</a>`;
             let a = document.createElement('a');
             a.href = entry.self
-            a.textContent = entry.book;
+            a.textContent = entry.book.title;
             
             // Append all our elements
             span.appendChild(a);

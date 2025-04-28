@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.4
 info:
   version: '1.0'
   title: "EasyLib OpenAPI 3.0"
@@ -6,10 +6,79 @@ info:
   license:
     name: MIT
 servers:
-  - url: http://localhost:8000/api/v1
+  - url: http://localhost:8080/api/v1
     description: Localhost
+  - url: https://easy-lib.onrender.com/api/v1
+    description: render.com
 paths:
+
+  /authentications:
+    post:
+      summary: Authenticate a user
+      description: >-
+        Authenticates a user and returns a JWT 'token'.
+      responses:
+        '200':
+          description: 'Token created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: 'True if the authentication was successful'
+                  token:
+                    type: string
+                    description: 'JWT token'
+        '401':
+          description: 'Unauthorized. Invalid credentials'
+      requestBody:
+        description: >-
+          The email and password must be passed in the body.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  description: 'Email address of the user'
+                password:
+                  type: string
+                  description: 'Password of the user'
+            examples:
+              example1:
+                value:
+                  email: 'mario.rossi@unitn.it'
+                  password: 'password'
+    
+
   /students:
+    get:
+      description: >-
+        Gets the list of students.
+        It is possible to show students by their role /students?role={role}
+      summary: View all students
+      parameters:
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [user, poweruser, admin]
+      responses:
+        '200':
+          description: 'Collection of students'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
     post:
       description: >-
         Creates a new student in the system.
@@ -17,17 +86,15 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  description: 'Email address of the student'
+            schema: 
+              $ref: '#/components/schemas/Student'
+            examples:
+              example1:
+                value:
+                  email: 'mario.rossi@unitn.it'
       responses:
         '201':
-          description: 'User created. Link in the Location header'
+          description: 'Student created. Link in the Location header'
           headers:
             'Location':
               schema:
@@ -38,7 +105,14 @@ paths:
     get:
       description: >-
         Gets the list of books.
+        It is possible to show books by their status /books?status={status}
       summary: View all books
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [available, lended]
       responses:
         '200':
           description: 'Collection of books'
@@ -48,11 +122,103 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Book'
-  /booklendings:
     post:
       description: >-
-        Creates a new booklending.
+        Creates a new book in the system.
+      summary: Add a new book
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Book'
+            examples:
+              example1:
+                value:
+                  title: 'The Great Gatsby'
+      responses:
+        '201':
+          description: 'Book created. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created book.
+  /books/{bookId}:
+    get:
+      description: >-
+        Gets the book with the given ID.
+      summary: View a book
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+          description: 'ID of the book'
+      responses:
+        '200':
+          description: 'Book found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: 'Book not found'
+    delete:
+      description: >-
+        Deletes the book with the given ID.
+      summary: Delete a book
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema:
+            type: string
+          description: 'ID of the book'
+      responses:
+        '204':
+          description: 'Book deleted'
+        '404':
+          description: 'Book not found'
+
+  /booklendings:
+    get:
+      description: >-
+        Gets the list of booklendings.
+        It is possible to show booklendings by studentId /booklendings?studentId={student}
+      summary: View all booklendings
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
+      parameters:
+        - in: query
+          name: studentId
+          schema:
+            type: string
+            description: 'ID of the student'
+      responses:
+        '200':
+          description: 'Collection of booklendings'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booklending'
+    post:
       summary: Borrow a book
+      description: >-
+        Creates a new booklending.
+        Token must be passed in the header.
+        The student and book must already exist in the system.
+        The book must be available.
+        The book status will be set to 'lended'.
+        The booklending will be created with the current date as start date.
+        The booklending will be created with the end date set to 30 days from now.
+        The booklending will be created with the status 'active'.
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '201':
           description: 'Booklending created. Link in the Location header'
@@ -62,25 +228,61 @@ paths:
                 type: string
               description: Link to the newly created booklending.
       requestBody:
+        description: >-
+          The booklending object to be created.
+          The student and book must already exist in the system.
+          The book must be available.
+          The book status will be set to 'lended'.
+          The booklending will be created with the current date as start date.
+          The booklending will be created with the end date set to 30 days from now.
+          The booklending will be created with the status 'active'.
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Booklending'
+            examples:
+              example1:
+                value:
+                  student: 'http://localhost:8080/api/v1/students/1'
+                  book: 'http://localhost:8080/api/v1/books/1'
           
 components:
+
+  securitySchemes:
+    
+    XAccessTokenHeaderAuth: # arbitrary name for the security scheme
+      description: >-
+        The API authentication.
+        The API key must be passed in the header 'x-access-token'.
+        The API key must be a valid JWT token.
+      type: apiKey
+      in: header
+      name: x-access-token
+    
+    TokenQueryAuth: # arbitrary name for the security scheme
+      description: >-
+        The API authentication.
+        The API key must be passed in the query string 'token'.
+        The API key must be a valid JWT token.
+      type: apiKey
+      in: query
+      name: token
+
   schemas:
+
     Student:
       type: object
       required:
-        - id
         - email
       properties:
-        id:
-          type: integer
-          description: 'ID of the user'
+        self:
+          type: string
+          description: 'Link to the student'
         email:
           type: string
-          description: 'Email address of the user'
+          description: 'Email address of the student'
+    
     Book:
       type: object
       required:
@@ -89,6 +291,9 @@ components:
         - ISBN
         - status
       properties:
+        self:
+          type: string
+          description: 'Link to the book'
         title:
           type: string
           description: 'Title of the book'
@@ -102,15 +307,47 @@ components:
           type: string
           enum: [available, lended]
           description: 'Tells whether the book is currently available or not'
+    
     Booklending:
       type: object
       required:
       - student
       - book
       properties:
-        user:
+        self:
           type: string
-          description: 'Link to the user'
+          description: 'Link to the booklending'
+        student:
+          type: string
+          description: 'Link to the student'
         book:
-          type: integer
+          type: string
           description: 'Link to the book'
+        start_date:
+          type: string
+          format: date-time
+          description: 'Start date of the booklending'
+          default: '${currentDate}'
+        end_date:
+          type: string
+          format: date-time
+          description: 'End date of the booklending'
+        status:
+          type: string
+          enum: [active, expired]
+          description: 'Tells whether the booklending is currently active or not'
+        overdue:  
+          type: boolean
+          description: >-
+            Tells whether the booklending is currently overdue or not.
+            The booklending is overdue if the end date is in the past and the status is 'active'.
+            The booklending is not overdue if the end date is in the future and the status is 'active'.
+            The booklending is not overdue if the status is 'expired'.
+        overdue_days:
+          type: integer
+          description: >-
+            Number of days the booklending is overdue.
+            The booklending is overdue if the end date is in the past and the status is 'active'.
+            The booklending is not overdue if the end date is in the future and the status is 'active'.
+            The booklending is not overdue if the status is 'expired'.
+            The number of days is calculated as the difference between the current date and the end date.

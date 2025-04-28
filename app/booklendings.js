@@ -13,19 +13,27 @@ const Book = require('./models/book'); // get our mongoose model
 router.get('', async (req, res) => {
     let booklendings;
 
+    const filter = {};
     if ( req.query.studentId )
-        booklendings = await Booklending.find({
-            studentId: req.query.studentId
-        }).exec();
+        filter.student = req.query.studentId;
     
-    else
-        booklendings = await Booklending.find({}).exec();
+    booklendings = await Booklending
+        .find( filter )
+        .populate( 'student', '-password -__v' )
+        .populate( 'book', '-__v' )
+        .exec();
 
     booklendings = booklendings.map( (dbEntry) => {
         return {
-            self: '/api/v1/booklendings/' + dbEntry.id,
-            student: '/api/v1/students/' + dbEntry.studentId,
-            book: '/api/v1/books/' + dbEntry.bookId
+            self: '/api/v1/booklendings/' + dbEntry._id,
+            student: {
+                self: '/api/v1/students/' + dbEntry.student._id,
+                email: dbEntry.student.email
+            },
+            book: {
+                self: '/api/v1/books/' + dbEntry.book._id,
+                title: dbEntry.book.title
+            }
         };
     });
 
@@ -75,14 +83,14 @@ router.post('', async (req, res) => {
         return; 
     };
 
-    if( ( await Booklending.find({bookId: bookId}).exec() ).lenght > 0) {
+    if( ( await Booklending.find({book: bookId}).exec() ).length > 0) {
         res.status(409).json({ error: 'Book already out' });
         return
     }
     
 	let booklending = new Booklending({
-        studentId: studentId,
-        bookId: bookId,
+        student: studentId,
+        book: bookId,
     });
     
 	booklending = await booklending.save();
