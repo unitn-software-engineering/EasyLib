@@ -25,19 +25,17 @@
   "homepage": "https://github.com/2020-unitn-SE2/EasyLib#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "google-auth-library": "^9.10.0",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^8.14.0"
+    "express": "^5.1.0",
+    "google-auth-library": "^10.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.4"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "@vitejs/plugin-vue": "^5.2.3",
-    "dotenv": "^8.2.0",
-    "dotenv-cli": "^8.0.0",
-    "jest": "^29.7.0",
-    "supertest": "^6.0.1",
-    "vite": "^6.3.3"
+    "@types/jest": "^30.0.0",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
   },
   "engines": {
     "node": ">=22.0.0"
