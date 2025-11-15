@@ -43,8 +43,9 @@ router.get('', async (req, res) => {
 
 
 router.post('', async (req, res) => {
-    let studentUrl = req.body.student;
-    let bookUrl = req.body.book;
+    const body = req.body || {};
+    let studentUrl = body.student;
+    let bookUrl = body.book;
 
     if (!studentUrl){
         res.status(400).json({ error: 'Student not specified' });
