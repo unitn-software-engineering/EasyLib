@@ -1,8 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-// set up a mongoose model
-module.exports = mongoose.model('Student', new Schema({ 
+export default mongoose.model('Student', new Schema({ 
 	email: String,
 	password: String
 }));

@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
+import Student from './models/student.js';
+import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 const router = express.Router();
-const Student = require('./models/student'); // get our mongoose model
-const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const {OAuth2Client} = require('google-auth-library');
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 /**
@@ -89,4 +89,4 @@ router.post('', async function(req, res) {
 
 
 
-module.exports = router;
+export default router;

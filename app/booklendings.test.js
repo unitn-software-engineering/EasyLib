@@ -1,10 +1,11 @@
 /**
  * https://www.npmjs.com/package/supertest
  */
-const request  = require('supertest');
-const app      = require('./app');
-const jwt      = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const mongoose = require('mongoose');
+import { jest } from '@jest/globals';
+import request from 'supertest';
+import app from './app.js';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 describe('GET /api/v1/booklendings', () => {
 
@@ -12,8 +13,7 @@ describe('GET /api/v1/booklendings', () => {
 
   beforeAll( async () => {
     jest.setTimeout(8000);
-    jest.unmock('mongoose');
-    connection = await  mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+    connection = await mongoose.connect(process.env.DB_URL);
     console.log('Database connected!');
     //return connection; // Need to return the Promise db connection?
   });

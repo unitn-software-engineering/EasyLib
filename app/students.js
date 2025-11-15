@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
+import Student from './models/student.js'; // get our mongoose model
 const router = express.Router();
-const Student = require('./models/student'); // get our mongoose model
 
 
 
@@ -71,4 +71,4 @@ function checkIfEmailInString(text) {
 
 
 
-module.exports = router;
+export default router;

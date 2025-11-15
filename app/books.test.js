@@ -1,8 +1,10 @@
 /**
  * https://www.npmjs.com/package/supertest
  */
-const request = require('supertest');
-const app     = require('./app');
+import { jest } from '@jest/globals';
+import request from 'supertest';
+import app from './app.js';
+import Book from './models/book.js';
 
 describe('GET /api/v1/books', () => {
 
@@ -12,7 +14,6 @@ describe('GET /api/v1/books', () => {
   let bookSpyFindById;
 
   beforeAll( () => {
-    const Book = require('./models/book');
     bookSpy = jest.spyOn(Book, 'find').mockImplementation((criterias) => {
       return [{
         id: 1010,

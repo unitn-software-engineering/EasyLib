@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
+import Booklending from './models/booklending.js';
+import Student from './models/student.js';
+import Book from './models/book.js';
 const router = express.Router();
-const Booklending = require('./models/booklending'); // get our mongoose model
-const Student = require('./models/student'); // get our mongoose model
-const Book = require('./models/book'); // get our mongoose model
 
 
 
@@ -117,4 +117,4 @@ router.delete('/:id', async (req, res) => {
 
 
 
-module.exports = router;
+export default router;

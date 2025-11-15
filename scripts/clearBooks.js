@@ -1,18 +1,13 @@
-require('dotenv').config()
-var mongoose = require('mongoose');
+import 'dotenv/config'
+import mongoose from 'mongoose';
+import Books from '../app/models/book.js';
 
-var Books = require('../app/models/book'); // get our mongoose model
-
-// connect to database
 mongoose.connect(process.env.DB_URL)
 .then( async () => {
 	console.log("Connected to Database")
-	
-	// Clear books
 	await Books.deleteMany().exec()
 	console.log("Books removed")
-	
-	process.exit();
+	process.exit(0);
 });
 
 

@@ -1,15 +1,16 @@
-const Path = require('path');
+import Path from 'path';
+import express from 'express';
+import cors from 'cors';
+import authentication from './authentication.js';
+import tokenChecker from './tokenChecker.js';
+import students from './students.js';
+import books from './books.js';
+import booklendings from './booklendings.js';
+import { fileURLToPath } from 'url';
 
-const express = require('express');
 const app = express();
-const cors = require('cors')
-
-const authentication = require('./authentication.js');
-const tokenChecker = require('./tokenChecker.js');
-
-const students = require('./students.js');
-const books = require('./books.js');
-const booklendings = require('./booklendings.js');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = Path.dirname(__filename);
 
 
 /**
@@ -104,4 +105,4 @@ app.use((err, req, res, next) => {
 
 
 
-module.exports = app;
+export default app;

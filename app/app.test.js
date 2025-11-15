@@ -1,9 +1,9 @@
 /**
  * https://www.npmjs.com/package/supertest
  */
-const request = require('supertest');
-const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('./app');
+import request from 'supertest';
+import jwt from 'jsonwebtoken';
+import app from './app.js';
 
 test('app module should be defined', () => {
   expect(app).toBeDefined();

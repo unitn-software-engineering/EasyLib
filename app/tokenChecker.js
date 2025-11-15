@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+import jwt from 'jsonwebtoken';
 
 const tokenChecker = function(req, res, next) {
 	
@@ -29,4 +29,4 @@ const tokenChecker = function(req, res, next) {
 	
 };
 
-module.exports = tokenChecker
+export default tokenChecker;

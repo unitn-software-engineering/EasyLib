@@ -1,8 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-// set up a mongoose model
-module.exports = mongoose.model('Booklending', new Schema({ 
+export default mongoose.model('Booklending', new Schema({ 
 	student: {type: Schema.Types.ObjectId, ref: 'Student'},
 	book: {type: Schema.Types.ObjectId, ref: 'Book'}
 }));

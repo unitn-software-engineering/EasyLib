@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
+import Book from './models/book.js'; // get our mongoose model
 const router = express.Router();
-const Book = require('./models/book'); // get our mongoose model
 
 
 
@@ -67,4 +67,4 @@ router.post('', async (req, res) => {
 });
 
 
-module.exports = router;
+export default router;

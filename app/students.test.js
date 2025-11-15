@@ -1,9 +1,11 @@
 /**
  * https://www.npmjs.com/package/supertest
  */
-const request = require('supertest');
-const jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
-const app     = require('./app');
+import { jest } from '@jest/globals';
+import request from 'supertest';
+import jwt from 'jsonwebtoken';
+import app from './app.js';
+import User from './models/student.js';
 
 describe('GET /api/v1/students/me', () => {
 
@@ -11,7 +13,6 @@ describe('GET /api/v1/students/me', () => {
   let userSpy;
 
   beforeAll( () => {
-    const User = require('./models/student');
     userSpy = jest.spyOn(User, 'findOne').mockImplementation((criterias) => {
       return {
         id: 1212,
