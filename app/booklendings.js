@@ -28,11 +28,11 @@ router.get('', async (req, res) => {
             self: '/api/v1/booklendings/' + dbEntry._id,
             student: {
                 self: '/api/v1/students/' + dbEntry.student?._id,
-                email: dbEntry.student?.email
+                email: dbEntry.student?.["email"]
             },
             book: {
                 self: '/api/v1/books/' + dbEntry.book?._id,
-                title: dbEntry.book?.title
+                title: dbEntry.book?.["title"]
             }
         };
     });
