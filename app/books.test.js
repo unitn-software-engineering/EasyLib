@@ -1,69 +1,71 @@
 /**
  * https://www.npmjs.com/package/supertest
  */
-import { jest } from '@jest/globals';
+import { expect } from 'chai';
+import sinon from 'sinon';
 import request from 'supertest';
 import app from './app.js';
 import Book from './models/book.js';
 
 describe('GET /api/v1/books', () => {
 
-  // Moking Book.find method
+  // Mocking Book.find method
   let bookSpy;
-  // Moking Book.findById method
+  // Mocking Book.findById method
   let bookSpyFindById;
 
-  beforeAll( () => {
-    bookSpy = jest.spyOn(Book, 'find').mockImplementation((criterias) => {
-      return [{
-        id: 1010,
-        title: 'Software Engineering 2'
-      }];
-    });
-    bookSpyFindById = jest.spyOn(Book, 'findById').mockImplementation((id) => {
+  before(() => {
+    bookSpy = sinon.stub(Book, 'find').returns([{
+      id: 1010,
+      title: 'Software Engineering 2'
+    }]);
+    
+    bookSpyFindById = sinon.stub(Book, 'findById').callsFake((id) => {
       return {
         exec: () => {
-          if (id==1010)
+          if (id == 1010)
             return {
               id: 1010,
               title: 'Software Engineering 2'
             };
           else
-            return {};
+            return null;
         }
       };
-    })
+    });
   });
 
-  afterAll(async () => {
-    bookSpy.mockRestore();
-    bookSpyFindById.mockRestore();
+  after(() => {
+    bookSpy.restore();
+    bookSpyFindById.restore();
   });
   
-  test('GET /api/v1/books should respond with an array of books', async () => {
-    return request(app)
+  it('GET /api/v1/books should respond with an array of books', (done) => {
+    request(app)
       .get('/api/v1/books')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then( (res) => {
-        if(res.body && res.body[0]) {
-          expect(res.body[0]).toEqual({
+      .end((err, res) => {
+        if (err) return done(err);
+        if (res.body && res.body[0]) {
+          expect(res.body[0]).to.deep.equal({
             self: '/api/v1/books/1010',
             title: 'Software Engineering 2'
           });
         }
+        done();
       });
   });
 
   
-  test('GET /api/v1/books/:id should respond with json', async () => {
-    return request(app)
+  it('GET /api/v1/books/:id should respond with json', (done) => {
+    request(app)
       .get('/api/v1/books/1010')
       .expect('Content-Type', /json/)
       .expect(200, {
           self: '/api/v1/books/1010',
           title: 'Software Engineering 2'
-        });
+        }, done);
   });
 
 });
