@@ -53,6 +53,7 @@ app.use(cors())
  */
 const FRONTEND = process.env.FRONTEND || Path.join( __dirname, '..', 'node_modules', 'easylibvue', 'dist' );
 app.use('/EasyLibApp/', express.static( FRONTEND ));
+console.log( "Vue FRONTEND from", FRONTEND, "at http://localhost:" + process.env.PORT || 8080 + "/EasyLibApp" )
 
 // If process.env.FRONTEND folder does not contain index.html then use the one from static
 app.use('/', express.static('static')); // expose also this folder
