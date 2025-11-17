@@ -29,7 +29,8 @@
     "express": "^5.1.0",
     "google-auth-library": "^10.5.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.4"
+    "mongoose": "^8.19.4",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

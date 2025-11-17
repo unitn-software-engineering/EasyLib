@@ -7,19 +7,27 @@ import students from './students.js';
 import books from './books.js';
 import booklendings from './booklendings.js';
 import { fileURLToPath } from 'url';
+import swaggerUi from 'swagger-ui-express';
+import { readFileSync } from 'fs';
+import yaml from 'js-yaml';
 
-const app = express();
+// Determine __dirname in ES module scope
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = Path.dirname(__filename);
 
+// Load OpenAPI (Swagger) document
+const swaggerDocument = yaml.load(readFileSync(Path.join(__dirname, '..', 'oas3.yaml'), 'utf8'));
+
+
+
+// Create Express app
+const app = express();
 
 /**
  * Configure Express.js parsing middleware
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 
 /**
  * CORS requests
@@ -57,6 +65,13 @@ console.log( "Vue FRONTEND from", FRONTEND, "at http://localhost:" + process.env
 
 // If process.env.FRONTEND folder does not contain index.html then use the one from static
 app.use('/', express.static('static')); // expose also this folder
+
+
+
+/**
+ * Serve openAPI
+ */
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 
