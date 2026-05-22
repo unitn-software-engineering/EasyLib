@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "testInSequence": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "start": "node index.js",
     "start_local": "echo use: $ npm run dev",
     "dev": "node -r dotenv/config index.js",

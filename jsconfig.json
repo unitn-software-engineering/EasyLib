@@ -4,7 +4,8 @@
       "target": "ES2022",
       "moduleResolution": "node",
       "allowJs": true,
-      "checkJs": true
+      "checkJs": true,
+      "noImplicitAny": false,
     },
     "exclude": [
       "node_modules",
