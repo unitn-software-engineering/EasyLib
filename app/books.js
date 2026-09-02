@@ -9,12 +9,24 @@ const router = express.Router();
  * https://cloud.google.com/blog/products/application-development/api-design-why-you-should-use-links-not-keys-to-represent-relationships-in-apis
  */
 router.get('', async (req, res) => {
+    const filter = {};
+    if (req.query.title) {
+        filter.title = { $regex: req.query.title, $options: 'i' };
+    }
+    if (req.query.author) {
+        filter.author = { $regex: req.query.author, $options: 'i' };
+    }
+
     // https://mongoosejs.com/docs/api.html#model_Model.find
-    let books = await Book.find({});
+    let books = await Book.find(filter);
     books = books.map( (book) => {
         return {
             self: '/api/v1/books/' + book.id,
-            title: book.title
+            title: book.title,
+            author: book.author || '',
+            isbn: book.isbn || '',
+            genre: book.genre || '',
+            year: book.year
         };
     });
     res.status(200).json(books);
@@ -36,7 +48,11 @@ router.get('/:id', async (req, res) => {
     let book = req['book'];
     res.status(200).json({
         self: '/api/v1/books/' + book.id,
-        title: book.title
+        title: book.title,
+        author: book.author || '',
+        isbn: book.isbn || '',
+        genre: book.genre || '',
+        year: book.year
     });
 });
 
@@ -48,9 +64,16 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('', async (req, res) => {
+    if (!req.body.title || typeof req.body.title !== 'string' || !req.body.title.trim()) {
+        return res.status(400).json({ error: 'The field "title" is required and must be a non-empty string' });
+    }
 
 	let book = new Book({
-        title: req.body.title
+        title: req.body.title.trim(),
+        author: req.body.author ? String(req.body.author).trim() : '',
+        isbn: req.body.isbn ? String(req.body.isbn).trim() : '',
+        genre: req.body.genre ? String(req.body.genre).trim() : '',
+        year: req.body.year ? Number(req.body.year) : undefined
     });
     
 	book = await book.save();

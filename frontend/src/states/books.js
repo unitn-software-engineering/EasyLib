@@ -11,17 +11,22 @@ const LENDINGS_URL = API_URL+'/booklendings'
 
 const books = reactive([])
 
-async function fetchBooks() {
-    books.value = await (await fetch(BOOKS_URL)).json()
+async function fetchBooks(query = {}) {
+    let url = new URL(BOOKS_URL);
+    if (query.title) url.searchParams.append('title', query.title);
+    if (query.author) url.searchParams.append('author', query.author);
+    const response = await fetch(url);
+    books.value = await response.json();
 }
 
-async function createBook(title) {
-    let response = await fetch(BOOKS_URL, {
+async function createBook(bookData) {
+    const payload = typeof bookData === 'string' ? { title: bookData } : bookData;
+    await fetch(BOOKS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { title: title } ),
-    })
-    fetchBooks()
+        body: JSON.stringify(payload),
+    });
+    fetchBooks();
 };
 
 async function deleteBook(book) {
