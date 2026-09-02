@@ -109,6 +109,16 @@ paths:
       summary: View all books
       parameters:
         - in: query
+          name: title
+          schema:
+            type: string
+          description: 'Filter books by title (case-insensitive substring)'
+        - in: query
+          name: author
+          schema:
+            type: string
+          description: 'Filter books by author (case-insensitive substring)'
+        - in: query
           name: status
           schema:
             type: string
@@ -287,9 +297,6 @@ components:
       type: object
       required:
         - title
-        - author
-        - ISBN
-        - status
       properties:
         self:
           type: string
@@ -300,9 +307,15 @@ components:
         author:
           type: string
           description: 'Author of the book'
-        ISBN:
+        isbn:
           type: string
-          description: 'ISBN of the book'
+          description: 'ISBN identifier of the book'
+        genre:
+          type: string
+          description: 'Genre or subject area of the book'
+        year:
+          type: integer
+          description: 'Publication year'
         status:
           type: string
           enum: [available, lended]
