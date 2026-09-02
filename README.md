@@ -487,4 +487,4 @@ Da questa interfaccia è possibile esplorare tutti gli endpoint, verificare i co
 
 ---
 
-*EasyLib — Repository didattico a cura del gruppo docenti del corso di Ingegneria del Software, Università di Trento.*
+*EasyLib — Repository didattico a cura di **Marco Robol** (marco.robol@unitn.it - https://github.com/marcorobol) e del gruppo docenti del corso di Ingegneria del Software, Università di Trento.*
