@@ -128,5 +128,9 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/node,windows,linux,visualstudiocode
 
-
 **/.DS_Store
+
+# Frontend
+frontend/dist
+frontend/.env
+frontend/.env.production

@@ -1,0 +1,21 @@
+{
+  "name": "easylibvue",
+  "version": "0.0.0",
+  "scripts": {
+    "postinstall": "npm run build",
+    "dev": "vite",
+    "build": "vite build",
+    "build.githubpages": "dotenvx run --env-file=.env.production -- vite build",
+    "preview": "vite preview --port 5050"
+  },
+  "dependencies": {
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14"
+  },
+  "devDependencies": {
+    "@dotenvx/dotenvx": "^0.44.0",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "esbuild": "^0.25.3",
+    "vite": "^6.3.3"
+  }
+}
