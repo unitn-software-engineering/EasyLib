@@ -13,7 +13,7 @@
 ## 📑 Indice dei Contenuti
 
 1. [📖 Panoramica del Progetto](#1--panoramica-del-progetto)
-2. [🧠 Metodologia di Sviluppo (AI-Assisted Agile)](#2--metodologia-di-sviluppo-ai-assisted-agile)
+2. [🧠 Metodologia di Sviluppo: Spec-Driven Development (SDD)](#2--metodologia-di-sviluppo-spec-driven-development-sdd)
 3. [📐 Architettura e Modelli UML](#3--architettura-e-modelli-uml)
 4. [📋 Product Backlog & User Stories](#4--product-backlog--user-stories)
 5. [🔄 Diario delle Iterazioni & Changelog (Sprint Logs)](#5--diario-delle-iterazioni--changelog-sprint-logs)
@@ -43,35 +43,58 @@ Il progetto adotta un'architettura **Fullstack Monorepo**, suddivisa in:
 
 ---
 
-## 2. 🧠 Metodologia di Sviluppo (AI-Assisted Agile)
+## 2. 🧠 Metodologia di Sviluppo: Spec-Driven Development (SDD)
 
-Il progetto segue un processo di sviluppo **Agile iterativo e incrementale** (ispirato a Scrum), arricchito dall'adozione sistematica di strumenti di **AI-Assisted Software Engineering** (es. *Antigravity IDE*, GitHub Copilot o agenti LLM).
+Il progetto adotta una metodologia **Spec-Driven Development (SDD)** per lo sviluppo assistito da agenti di intelligenza artificiale (es. *Antigravity IDE*, GitHub Copilot, Claude Code).
+
+### 💡 Filosofia: Spec-Driven vs Vibe Coding
+
+Nel moderno software engineering potenziato da agenti AI, l'anti-pattern da evitare è il cosiddetto **"Vibe Coding"** (generazione cieca di codice a partire da prompt vaghi, senza controllo architetturale).  
+Nel modello **Spec-Driven Development**:
+- **Lo Studente è l'Architetto e il Revisore**: definisce contratti API, modelli concettuali, invarianti di sicurezza e casi di test prima di richiedere codice all'agente.
+- **L'Agente AI è un Esecutore Vincolato**: opera strettamente all'interno dei confini tracciati dalle specifiche e dai test.
+- **La Specifica è la *Single Source of Truth***: ogni discrepanza nel codice generato dall'agente viene risolta verificando la conformità alla specifica formale.
 
 ```mermaid
-flowchart LR
-    A[📋 Sprint Planning & User Stories] --> B[🤖 AI Prompting & Plan Mode]
-    B --> C[🔍 Human Review del Piano]
-    C --> D[💻 Sviluppo & Modelli UML]
-    D --> E[🧪 Test Automatici Jest/Supertest]
-    E --> F[👥 Review PR & Retrospettiva]
-    F -->|Next Sprint| A
+flowchart TD
+    A["1. User Stories & Requisiti<br><i>(Given-When-Then / Gherkin)</i>"] --> B["2. Formalizzazione Specifica<br><i>(OpenAPI 3.0, JSON Schema, UML)</i>"]
+    B --> C["3. Test-First & Invarianti<br><i>(Test automatici Jest/Supertest)</i>"]
+    C --> D["4. Esecuzione Agente Vincolata<br><i>(Implementation Plan ➔ Codice)</i>"]
+    D --> E["5. Validazione Umana & CI<br><i>(Human Gate, GitHub Actions, Code Review)</i>"]
+    E -->|Feature completata o iterazione| A
 ```
 
-### 🎯 Linee Guida per lo Sviluppo con AI
+### 🔄 Il Ciclo Operativo in 5 Fasi
 
-1. **Ruolo dello Sviluppatore (Human-in-the-Loop)**:
-   - L'assistente AI agisce da *pair programmer* o *subagente esecutivo*, ma lo **studente è l'architetto e il revisore finale** responsabile della correttezza, sicurezza, robustezza ed eleganza del codice.
-   - Non accettare passivamente suggerimenti di codice senza averne compreso la logica e verificato i requisiti non funzionali.
-2. **Ciclo Operativo per ogni Task**:
-   - **1. Context & Prompting**: Fornire all'AI contesto chiaro (modelli dati attuali, file coinvolti, vincoli di dominio).
-   - **2. Planning**: Richiedere un piano di implementazione prima della stesura del codice, valutando impatti su API, modelli e test.
-   - **3. Test-First / Test-Driven**: Scrivere o aggiornare i test automatici prima o contestualmente al codice.
-   - **4. Verification & Validation**: Eseguire la suite di test (`npm test`) e verificare manualmente le funzionalità da interfaccia.
-3. **Mitigazione dei Rischi AI**:
-   - *Allucinazioni su API/librerie*: Verificare sempre la compatibilità con le versioni in uso (es. Express 5, Mongoose 8, Node 22 ESM).
-   - *Regressioni*: Mantenere una copertura di test elevata per rilevare tempestivamente effetti collaterali indesiderati.
-4. **Trasparenza**:
-   - Documentare nel registro di ogni iterazione (Sprint Log) i prompt principali, le sfide affrontate e gli interventi correttivi umani.
+1. **Redazione della Specifica Funzionale & Tecnica**:
+   - Compilazione del template [`SPEC_TEMPLATE.md`](SPEC_TEMPLATE.md) per ogni nuova feature prima della generazione di codice.
+   - Definizione dei criteri di accettazione in formato **Given-When-Then (Gherkin)**.
+   - Aggiornamento/creazione dei contratti OpenAPI in [`oas3.yaml`](oas3.yaml) e dei modelli UML (diagrammi di classe e sequenza).
+2. **Dichiarazione delle Invarianti di Dominio**:
+   - Esplicitazione delle regole di business e sicurezza che l'agente non può violare (es. unicità prestiti, autorizzazioni per utente).
+3. **Approccio Test-First / Test-Driven**:
+   - Generazione/scrittura dei test automatici derivati dai criteri Gherkin (`app/tests/*.test.js`). I test inizialmente falliscono per mancanza di implementazione.
+4. **Prompting & Esecuzione Vincolata dell'Agente**:
+   - Richiesta preliminare di un Piano di Implementazione (`implementation_plan.md`) da parte dell'agente.
+   - Validazione umana del piano e successiva generazione guidata del codice fino al passaggio al verde di tutti i test.
+5. **Human Gate, Review & Continuous Integration**:
+   - Ispezione umana della diff del codice (controllo dipendenze, assenza di vulnerabilità o allucinazioni).
+   - Verifica del passaggio completo della pipeline CI con **GitHub Actions** (`npm test`).
+
+> 📚 **Risorse Didattiche Correlate**:
+> - Template operativo di specifica: [`SPEC_TEMPLATE.md`](SPEC_TEMPLATE.md)
+> - Esempio di specifica completo (*Gold Standard*): [`specs/US-07-return-book.md`](specs/US-07-return-book.md)
+> - Regole e vincoli di sistema per agenti AI: [`AGENTS.md`](AGENTS.md)
+> - Guida ai Prompt per gli studenti: [`docs/PROMPT_CHEATSHEET.md`](docs/PROMPT_CHEATSHEET.md)
+> - Criteri e rubrica di valutazione d'esame: [`EVALUATION_RUBRIC.md`](EVALUATION_RUBRIC.md)
+
+### 📖 Standard e Guide Ufficiali di Riferimento
+
+La metodologia adottata nel corso si fonda sui principali standard e pubblicazioni del settore:
+- **GitHub Next — [Spec-Driven Development with AI (Copilot Workspace)](https://githubnext.com/projects/copilot-workspace)**: il framework a 3 stadi (*Specification $\to$ Plan $\to$ Implementation*) per governare lo sviluppo con agenti.
+- **Anthropic Research — [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)**: pattern architetturali per agenti semplici ed affidabili basati su cicli di valutazione oggettiva (*Evaluator-Optimizer*).
+- **OpenAPI Initiative & SmartBear — [API-First / Design-First Guide](https://swagger.io/resources/articles/design-first-approach/)**: standardizzazione dei contratti REST per lo sviluppo disaccoppiato.
+- **Martin Fowler — [Specification by Example (SBE)](https://martinfowler.com/bliki/SpecificationByExample.html)**: definizione di requisiti e criteri di accettazione tramite esempi eseguibili (*Given-When-Then*).
 
 ---
 
@@ -476,6 +499,14 @@ Da questa interfaccia è possibile esplorare tutti gli endpoint, verificare i co
 
 ## 8. 📚 Riferimenti & Risorse Utili
 
+### 🤖 Metodologia Spec-Driven Development & AI Agents
+- [GitHub Next — Spec-Driven Development with AI](https://githubnext.com/projects/copilot-workspace)
+- [Anthropic — Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
+- [OpenAPI 3.0 / Swagger Design-First Guide](https://swagger.io/resources/articles/design-first-approach/)
+- [Martin Fowler — Specification by Example](https://martinfowler.com/bliki/SpecificationByExample.html)
+- [Cucumber BDD — Given-When-Then Syntax Guide](https://cucumber.io/docs/bdd/)
+
+### 🛠️ Stack Tecnologico & Standard
 - [Express.js v5 Documentation](https://expressjs.com/)
 - [Mongoose ODM Guide](https://mongoosejs.com/docs/)
 - [Vue.js 3 Official Guide](https://vuejs.org/guide/introduction.html)
