@@ -3,7 +3,8 @@
 > **Guida Operativa ai Prompt per gli Studenti**  
 > *Ingegneria del Software — DISI, Università degli Studi di Trento*
 
-Questa guida fornisce **modelli di prompt pronti all'uso** per interagire in modo efficace con gli agenti AI (Antigravity IDE, Cursor, Claude Code, GitHub Copilot) durante ciascuna fase del ciclo **Spec-Driven Development**.
+Questa guida fornisce **modelli di prompt pronti all'uso** per interagire in modo efficace con gli agenti AI (**OpenCode**, Antigravity IDE, Cursor, Claude Code, GitHub Copilot) durante ciascuna fase del ciclo **Spec-Driven Development**.  
+*Per la configurazione di OpenCode con crediti Google Cloud (50$), consulta la guida: [`OPENCODE_GCP_SETUP.md`](OPENCODE_GCP_SETUP.md).*
 
 ---
 

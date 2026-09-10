@@ -85,6 +85,7 @@ flowchart TD
 > - Template operativo di specifica: [`SPEC_TEMPLATE.md`](SPEC_TEMPLATE.md)
 > - Esempio di specifica completo (*Gold Standard*): [`specs/US-07-return-book.md`](specs/US-07-return-book.md)
 > - Regole e vincoli di sistema per agenti AI: [`AGENTS.md`](AGENTS.md)
+> - Setup OpenCode & Google Cloud (Crediti 50$): [`docs/OPENCODE_GCP_SETUP.md`](docs/OPENCODE_GCP_SETUP.md)
 > - Guida ai Prompt per gli studenti: [`docs/PROMPT_CHEATSHEET.md`](docs/PROMPT_CHEATSHEET.md)
 > - Criteri e rubrica di valutazione d'esame: [`EVALUATION_RUBRIC.md`](EVALUATION_RUBRIC.md)
 
