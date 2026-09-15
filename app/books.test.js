@@ -5,8 +5,11 @@ import { jest } from '@jest/globals';
 import request from 'supertest';
 import app from './app.js';
 import Book from './models/book.js';
+import jwt from 'jsonwebtoken';
 
 describe('Books API endpoints', () => {
+
+  const operatorToken = jwt.sign({ email: 'operator@easylib.test', id: '507f1f77bcf86cd799439011', role: 'operator' }, process.env.SUPER_SECRET);
 
   let bookFindSpy;
   let bookFindByIdSpy;
@@ -102,6 +105,7 @@ describe('Books API endpoints', () => {
   test('POST /api/v1/books with missing title should return 400 Bad Request', async () => {
     const res = await request(app)
       .post('/api/v1/books')
+      .set('x-access-token', operatorToken)
       .send({ author: 'Ian Sommerville' })
       .expect(400);
 
@@ -115,6 +119,7 @@ describe('Books API endpoints', () => {
 
     const res = await request(app)
       .post('/api/v1/books')
+      .set('x-access-token', operatorToken)
       .send({
         title: 'Clean Code',
         author: 'Robert C. Martin',

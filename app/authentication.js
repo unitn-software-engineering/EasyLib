@@ -2,6 +2,7 @@ import express from 'express';
 import Student from './models/student.js';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
+import { hashPassword, randomPassword, verifyPassword } from './security/password.js';
 const router = express.Router();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -38,7 +39,8 @@ router.post('', async function(req, res) {
 		if ( ! user ) {
 			user = new Student({
 				email: payload['email'],
-				password: 'default-google-password-to-be-changed'
+				password: hashPassword(randomPassword()),
+				role: 'user'
 			});
 			await user.save().exec();
 			console.log('Student created after login with google');
@@ -59,7 +61,7 @@ router.post('', async function(req, res) {
 		}
 	
 		// check if password matches
-		if (user.password != req.body.password) {
+		if (!verifyPassword(req.body.password, user.password)) {
 			res.status(401).json({ success: false, message: 'Authentication failed. Wrong password.' });
 			return;
 		}
@@ -68,7 +70,8 @@ router.post('', async function(req, res) {
 	// if user is found or created create a token
 	var payload = {
 		email: user.email,
-		id: user._id
+		id: user._id,
+		role: user.role || 'user'
 		// other data encrypted in the token	
 	}
 	var options = {
@@ -82,7 +85,8 @@ router.post('', async function(req, res) {
 		token: token,
 		email: user.email,
 		id: user._id,
-		self: "api/v1/" + user._id
+		role: user.role || 'user',
+		self: "/api/v1/students/" + user._id
 	});
 
 });

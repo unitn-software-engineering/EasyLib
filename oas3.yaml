@@ -31,6 +31,9 @@ paths:
                   token:
                     type: string
                     description: 'JWT token'
+                  role:
+                    type: string
+                    enum: [user, operator]
         '401':
           description: 'Unauthorized. Invalid credentials'
       requestBody:
@@ -136,6 +139,9 @@ paths:
       description: >-
         Creates a new book in the system.
       summary: Add a new book
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         content:
           application/json:
@@ -178,6 +184,9 @@ paths:
       description: >-
         Deletes the book with the given ID.
       summary: Delete a book
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       parameters:
         - in: path
           name: bookId
@@ -190,6 +199,7 @@ paths:
           description: 'Book deleted'
         '404':
           description: 'Book not found'
+
 
   /booklendings:
     get:
@@ -256,7 +266,59 @@ paths:
                 value:
                   student: 'http://localhost:8080/api/v1/students/1'
                   book: 'http://localhost:8080/api/v1/books/1'
-          
+
+  /booklendings/{id}:
+    delete:
+      summary: Register a book return
+      description: Marks an active lending as returned and preserves it in history.
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Book returned
+        '400':
+          description: Invalid lending identifier
+        '401':
+          description: Authentication required
+        '403':
+          description: Lending belongs to another user
+        '404':
+          description: Lending not found
+        '409':
+          description: Lending already returned
+    patch:
+      summary: Extend a book lending
+      description: An operator extends an active lending by 30 days.
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lending extended
+        '400':
+          description: Invalid lending identifier
+        '401':
+          description: Authentication required
+        '403':
+          description: Operator role required
+        '404':
+          description: Lending not found
+        '409':
+          description: Lending is not active
+
 components:
 
   securitySchemes:
@@ -347,8 +409,12 @@ components:
           description: 'End date of the booklending'
         status:
           type: string
-          enum: [active, expired]
+          enum: [active, returned]
           description: 'Tells whether the booklending is currently active or not'
+        returnedAt:
+          type: string
+          format: date-time
+          description: 'Date on which the book was returned'
         overdue:  
           type: boolean
           description: >-

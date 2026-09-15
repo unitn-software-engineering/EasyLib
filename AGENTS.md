@@ -64,3 +64,10 @@ Prima di segnalare il completamento di un task, l'agente deve verificare interna
 - [ ] `npm test` è stato eseguito e tutti i test sono passati?
 - [ ] Il file `oas3.yaml` è stato aggiornato se sono stati modificati endpoint o DTO?
 - [ ] Sono stati mantenuti commenti esplicativi e convenzioni di stile del progetto?
+
+## 🔐 5. Policy Git e controllo umano
+
+- L'agente AI **non deve mai eseguire automaticamente** `git commit`, `git push`, `git merge`, `git rebase`, `git reset`, `git checkout` o operazioni equivalenti che modifichino la storia o cambino branch.
+- L'agente può usare comandi di sola lettura come `git status`, `git diff` e `git log` per fornire evidence.
+- Le modifiche devono rimanere nel working tree per la revisione manuale dello studente. Il commit è sempre un'azione esplicita dell'utente, eseguita fuori dal ciclo automatico dell'agente.
+- Se un task o un comando richiede una di queste operazioni, l'agente deve fermarsi e chiedere una decisione umana senza tentare workaround.

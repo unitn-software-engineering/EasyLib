@@ -1,120 +1,102 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import Booklending from './models/booklending.js';
 import Student from './models/student.js';
 import Book from './models/book.js';
+import { canAccessStudent, isOperator, requireOperator } from './authorization.js';
+
 const router = express.Router();
+const LOAN_DAYS = 30;
 
+function extractId(value) {
+    if (typeof value !== 'string') return undefined;
+    return value.substring(value.lastIndexOf('/') + 1);
+}
 
+function validId(value) {
+    return typeof value === 'string' && mongoose.Types.ObjectId.isValid(value);
+}
 
-/**
- * Resource representation based on the following the pattern: 
- * https://cloud.google.com/blog/products/application-development/api-design-why-you-should-use-links-not-keys-to-represent-relationships-in-apis
- */
+function representation(entry) {
+    return {
+        self: '/api/v1/booklendings/' + entry._id,
+        student: { self: '/api/v1/students/' + entry.student?._id, email: entry.student?.email },
+        book: { self: '/api/v1/books/' + entry.book?._id, title: entry.book?.title },
+        start_date: entry.start_date,
+        end_date: entry.end_date,
+        status: entry.status,
+        returnedAt: entry.returnedAt
+    };
+}
+
 router.get('', async (req, res) => {
-    let booklendings;
+    const requestedStudentId = req.query.studentId;
+    const studentId = requestedStudentId || (!isOperator(req) ? req.loggedUser?.id : undefined);
+    if (studentId && !validId(studentId)) return res.status(400).json({ error: 'Invalid student ID' });
+    if (studentId && !canAccessStudent(req, studentId)) {
+        return res.status(403).json({ error: 'You can only access your own booklendings' });
+    }
 
-    const filter = {};
-    if ( req.query.studentId )
-        filter.student = req.query.studentId;
-    
-    booklendings = await Booklending
-        .find( filter )
-        .populate( 'student', '-password -__v' )
-        .populate( 'book', '-__v' )
+    const filter = studentId ? { student: studentId } : {};
+    const booklendings = await Booklending.find(filter)
+        .populate('student', '-password -__v')
+        .populate('book', '-__v')
         .exec();
-
-    booklendings = booklendings.map( (dbEntry) => {
-        return {
-            self: '/api/v1/booklendings/' + dbEntry._id,
-            student: {
-                self: '/api/v1/students/' + dbEntry.student?._id,
-                email: dbEntry.student?.["email"]
-            },
-            book: {
-                self: '/api/v1/books/' + dbEntry.book?._id,
-                title: dbEntry.book?.["title"]
-            }
-        };
-    });
-
-    res.status(200).json(booklendings);
+    res.status(200).json(booklendings.map(representation));
 });
-
-
 
 router.post('', async (req, res) => {
     const body = req.body || {};
-    let studentUrl = body.student;
-    let bookUrl = body.book;
+    const studentId = extractId(body.student);
+    const bookId = extractId(body.book);
 
-    if (!studentUrl){
-        res.status(400).json({ error: 'Student not specified' });
-        return;
-    };
-    
-    if (!bookUrl) {
-        res.status(400).json({ error: 'Book not specified' });
-        return;
-    };
-    
-    let studentId = studentUrl.substring(studentUrl.lastIndexOf('/') + 1);
-    let student = null;
-    try {
-        student = await Student.findById(studentId);
-    } catch (error) {
-        // This catch CastError when studentId cannot be casted to mongoose ObjectId
-        // CastError: Cast to ObjectId failed for value "11" at path "_id" for model "Student"
+    if (!body.student) return res.status(400).json({ error: 'Student not specified' });
+    if (!body.book) return res.status(400).json({ error: 'Book not specified' });
+    if (!validId(studentId) || !validId(bookId)) return res.status(400).json({ error: 'Student or book ID is invalid' });
+    if (!canAccessStudent(req, studentId)) return res.status(403).json({ error: 'You can only create your own booklendings' });
+
+    const [student, book] = await Promise.all([Student.findById(studentId), Book.findById(bookId).exec()]);
+    if (!student) return res.status(400).json({ error: 'Student does not exist' });
+    if (!book) return res.status(400).json({ error: 'Book does not exist' });
+    if (await Booklending.findOne({ book: bookId, status: 'active' }).exec()) {
+        return res.status(409).json({ error: 'Book already out' });
     }
 
-    if(student == null) {
-        res.status(400).json({ error: 'Student does not exist' });
-        return;
-    };
-    
-    let bookId = bookUrl.substring(bookUrl.lastIndexOf('/') + 1);
-    let book = null;
-    try {
-        book = await Book.findById(bookId).exec();
-    } catch (error) {
-        // CastError: Cast to ObjectId failed for value "11" at path "_id" for model "Book"
-    }
-    
-    if(book == null) {
-        res.status(400).json({ error: 'Book does not exist' });
-        return; 
-    };
-
-    if( ( await Booklending.find({book: bookId}).exec() ).length > 0) {
-        res.status(409).json({ error: 'Book already out' });
-        return
-    }
-    
-	let booklending = new Booklending({
-        student: studentId,
-        book: bookId,
-    });
-    
-	booklending = await booklending.save();
-    
-    let booklendingId = booklending.id;
-    
-    res.location("/api/v1/booklendings/" + booklendingId).status(201).send();
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + LOAN_DAYS);
+    const lending = await new Booklending({
+        student: studentId, book: bookId, start_date: startDate, end_date: endDate, status: 'active'
+    }).save();
+    res.location('/api/v1/booklendings/' + lending.id).status(201).send();
 });
-
-
 
 router.delete('/:id', async (req, res) => {
-    let lending = await Booklending.findById(req.params.id).exec();
-    if (!lending) {
-        res.status(404).send()
-        console.log('lending not found')
-        return;
-    }
-    await lending.deleteOne()
-    console.log('lending removed')
-    res.status(204).send()
+    const { id } = req.params;
+    if (!validId(id)) return res.status(400).json({ error: 'Invalid lending ID' });
+    const lending = await Booklending.findById(id).exec();
+    if (!lending) return res.status(404).send();
+    if (!canAccessStudent(req, lending.student)) return res.status(403).json({ error: 'You can only return your own booklendings' });
+    if (lending.status === 'returned') return res.status(409).json({ error: 'Booklending already returned' });
+
+    lending.status = 'returned';
+    lending.returnedAt = new Date();
+    await lending.save();
+    res.status(204).send();
 });
 
+router.patch('/:id/extension', requireOperator, async (req, res) => {
+    const { id } = req.params;
+    if (!validId(id)) return res.status(400).json({ error: 'Invalid lending ID' });
+    const lending = await Booklending.findById(id).exec();
+    if (!lending) return res.status(404).send();
+    if (lending.status !== 'active') return res.status(409).json({ error: 'Only active booklendings can be extended' });
 
+    const endDate = new Date(lending.end_date || Date.now());
+    endDate.setDate(endDate.getDate() + LOAN_DAYS);
+    lending.end_date = endDate;
+    await lending.save();
+    res.status(200).json({ self: '/api/v1/booklendings/' + lending.id, end_date: lending.end_date });
+});
 
 export default router;

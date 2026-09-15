@@ -1,5 +1,7 @@
 import express from 'express';
 import Book from './models/book.js'; // get our mongoose model
+import { requireOperator } from './authorization.js';
+import tokenChecker from './tokenChecker.js';
 const router = express.Router();
 
 
@@ -56,14 +58,14 @@ router.get('/:id', async (req, res) => {
     });
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', tokenChecker, requireOperator, async (req, res) => {
     let book = req['book'];
     await Book.deleteOne({ _id: req.params.id });
     console.log('book removed')
     res.status(204).send()
 });
 
-router.post('', async (req, res) => {
+router.post('', tokenChecker, requireOperator, async (req, res) => {
     if (!req.body.title || typeof req.body.title !== 'string' || !req.body.title.trim()) {
         return res.status(400).json({ error: 'The field "title" is required and must be a non-empty string' });
     }

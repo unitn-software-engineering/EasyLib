@@ -1,5 +1,6 @@
 import express from 'express';
 import Student from './models/student.js'; // get our mongoose model
+import { hashPassword } from './security/password.js';
 const router = express.Router();
 
 
@@ -14,7 +15,8 @@ router.get('/me', async (req, res) => {
 
     res.status(200).json({
         self: '/api/v1/students/' + student.id,
-        email: student.email
+        email: student.email,
+        role: student.role || 'user'
     });
 });
 
@@ -30,7 +32,8 @@ router.get('', async (req, res) => {
     students = students.map( (entry) => {
         return {
             self: '/api/v1/students/' + entry.id,
-            email: entry.email
+            email: entry.email,
+            role: entry.role || 'user'
         }
     });
 
@@ -39,9 +42,17 @@ router.get('', async (req, res) => {
 
 router.post('', async (req, res) => {
     
+	if (!req.body.password || typeof req.body.password !== 'string' || req.body.password.length < 3) {
+		res.status(400).json({ error: 'The field "password" must be a string with at least 3 characters' });
+		return;
+	}
+
 	let student = new Student({
         email: req.body.email,
-        password: req.body.password
+		password: hashPassword(req.body.password),
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+		fiscalCode: req.body.fiscalCode
     });
 
     if (!student.email || typeof student.email != 'string' || !checkIfEmailInString(student.email)) {
@@ -49,7 +60,15 @@ router.post('', async (req, res) => {
         return;
     }
     
-	student = await student.save();
+	try {
+		student = await student.save();
+	} catch (error) {
+		if (error?.code === 11000) {
+			res.status(409).json({ error: 'A student with this email or fiscal code already exists' });
+			return;
+		}
+		throw error;
+	}
     
     let studentId = student._id;
 
