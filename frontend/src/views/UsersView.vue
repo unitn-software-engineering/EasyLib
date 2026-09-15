@@ -49,14 +49,16 @@ onMounted(fetchUsers)
 
 <template>
   <main>
-    <h1>Registered users</h1>
-    <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
-    <p v-else-if="users.length === 0">No users registered.</p>
-    <ul v-else>
+    <div class="page-heading"><div><p class="eyebrow">Workspace / amministrazione</p><h1>Utenti registrati</h1><p>Gestisci gli account che utilizzano la biblioteca.</p></div><span class="status-badge">{{ users.length }} account</span></div>
+    <p class="status-message" v-if="errorMessage">{{ errorMessage }}</p>
+    <section class="surface-panel">
+    <p class="empty-state" v-if="users.length === 0">Nessun utente registrato.</p>
+    <ul class="data-list list-reset" v-else>
       <li v-for="user in users" :key="user.self">
-        <strong>{{ user.email }}</strong> — {{ user.role }}
-        <button :disabled="loading || user.id === loggedUser.id" @click="deleteUser(user)">Delete</button>
+        <div><strong>{{ user.email }}</strong><div class="muted">Ruolo: {{ user.role }}</div></div>
+        <button class="button-danger" :disabled="loading || user.id === loggedUser.id" @click="deleteUser(user)">Elimina account</button>
       </li>
     </ul>
+    </section>
   </main>
 </template>

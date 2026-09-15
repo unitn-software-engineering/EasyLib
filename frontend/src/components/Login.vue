@@ -47,16 +47,22 @@ function logout() {
 
 <template>
   <form>
-    <span v-if="loggedUser.token">
-      Welcome <a :href="HOST+loggedUser.self">{{loggedUser.email}}</a> ({{loggedUser.role}})
-      <button type="button" @click="logout">LogOut</button>
+    <span v-if="loggedUser.token" class="logged-in-user">
+      <span>Connesso come <strong>{{loggedUser.email}}</strong></span>
+      <button class="button-quiet" type="button" @click="logout">Esci</button>
     </span>
     
     <span v-if="!loggedUser.token">
       <input name="email" type="email" autocomplete="username" v-model="email" />
       <input name="password" type="password" autocomplete="current-password" v-model="password" />
-      <button type="button" @click="login">LogIn</button>
-      <span v-if="errorMessage" style="color: red;">{{ errorMessage }}</span>
+      <button class="button-primary" type="button" @click="login">Accedi</button>
+      <span v-if="errorMessage" class="status-message">{{ errorMessage }}</span>
     </span>
   </form>
 </template>
+<style scoped>
+.logged-in-user { display: flex; align-items: center; gap: 10px; }
+.logged-in-user strong { color: var(--color-heading); }
+.status-message { margin: 0 0 0 5px; font-size: 11px; }
+@media (max-width: 780px) { .auth-area form { flex-wrap: wrap; } .auth-area input { width: min(150px, 34vw); } }
+</style>

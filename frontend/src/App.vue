@@ -1,131 +1,35 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
 import Login from '@/components/Login.vue'
 import LoginGoogle from '@/components/LoginGoogle.vue'
-
-import { ref, onMounted } from 'vue'
 import { loggedUser } from './states/loggedUser.js'
 
 </script>
 
 <template>
-  <div>
-    <img alt="Vue logo" class="logo" src="@/assets/EasyLibLogo.jpg" width="100" />
-
-    <div class="wrapper">
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/books">Books</RouterLink>
-      <RouterLink to="/booklendings">Booklendings</RouterLink>
-      <RouterLink to="/libraries">Libraries</RouterLink>
-      <RouterLink to="/notifications">Notifications</RouterLink>
-      <RouterLink v-if="loggedUser.role === 'operator'" to="/users">Users</RouterLink>
+  <div class="page-shell">
+    <aside class="side-panel">
+      <div class="brand-lockup"><span class="brand-mark">⌘</span> EasyLib</div>
+      <p class="side-label">Workspace</p>
+      <nav class="side-nav" aria-label="Workspace navigation">
+        <RouterLink to="/"><span class="nav-icon">⌂</span>Home</RouterLink>
+        <RouterLink to="/books"><span class="nav-icon">▦</span>Catalogo</RouterLink>
+        <RouterLink to="/booklendings"><span class="nav-icon">↗</span>Prestiti</RouterLink>
+        <RouterLink to="/libraries"><span class="nav-icon">⌖</span>Biblioteche</RouterLink>
+        <RouterLink to="/notifications"><span class="nav-icon">◌</span>Notifiche</RouterLink>
+        <RouterLink v-if="loggedUser.role === 'operator'" to="/users"><span class="nav-icon">◎</span>Utenti</RouterLink>
       </nav>
-      
-      <Login /> <LoginGoogle />
-
+      <p class="side-label">Stato</p>
+      <div class="side-tip"><strong>{{ loggedUser.token ? 'Sessione attiva' : 'Accesso richiesto' }}</strong>{{ loggedUser.token ? 'Spazio biblioteca pronto.' : 'Accedi per gestire i tuoi prestiti.' }}</div>
+    </aside>
+    <div class="main-column">
+      <header class="top-bar"><div class="auth-area"><Login /><span class="google-login"><LoginGoogle /></span></div></header>
+      <main class="content-wrap"><RouterView /></main>
     </div>
   </div>
-
-  <RouterView />
 </template>
 
 <style>
 @import '@/assets/base.css';
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
-}
-
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>

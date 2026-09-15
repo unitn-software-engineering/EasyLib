@@ -1,6 +1,6 @@
 // https://vuejs.org/guide/scaling-up/state-management.html#simple-state-management-with-reactivity-api
 
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { loggedUser } from './loggedUser.js'
 
 const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
@@ -10,14 +10,15 @@ const LENDINGS_URL = API_URL+'/booklendings'
 
 
 
-const books = reactive([])
+const books = ref([])
 
 async function fetchBooks(query = {}) {
     let url = new URL(BOOKS_URL);
     if (query.title) url.searchParams.append('title', query.title);
     if (query.author) url.searchParams.append('author', query.author);
     const response = await fetch(url);
-    books.value = await response.json();
+    const data = await response.json();
+    books.value = Array.isArray(data) ? data : [];
 }
 
 async function createBook(bookData) {

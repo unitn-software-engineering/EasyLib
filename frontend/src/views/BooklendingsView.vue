@@ -4,7 +4,7 @@ import BooklendingsTable from '@/components/BooklendingsTable.vue'
 
 <template>
   <div>
-    <h1>Booklendings:</h1>
+    <div class="page-heading"><div><p class="eyebrow">Workspace / prestiti</p><h1>Prestiti</h1><p>Segui le scadenze e conserva lo storico delle restituzioni.</p></div></div>
       <BooklendingsTable />
   </div>
 </template>

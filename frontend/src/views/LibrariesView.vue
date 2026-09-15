@@ -19,17 +19,19 @@ onMounted(search)
 
 <template>
   <main>
-    <h1>Library search</h1>
-    <form @submit.prevent="search">
-      <input v-model="municipality" placeholder="Municipality" />
-      <button type="submit">Search</button>
+    <div class="page-heading"><div><p class="eyebrow">Servizi locali</p><h1>Biblioteche</h1><p>Trova sedi, indirizzi e orari nel dataset locale.</p></div></div>
+    <section class="surface-panel">
+    <form class="toolbar" @submit.prevent="search">
+      <input id="municipality" name="municipality" v-model="municipality" placeholder="Cerca per comune" aria-label="Cerca per comune" />
+      <button class="button-primary" type="submit">Cerca biblioteche</button>
     </form>
-    <p v-if="searched && libraries.length === 0">No libraries found.</p>
-    <ul>
+    <p class="empty-state" v-if="searched && libraries.length === 0">Nessuna biblioteca trovata.</p>
+    <ul class="data-list list-reset">
       <li v-for="library in libraries" :key="library.id">
-        <strong>{{ library.name }}</strong> — {{ library.address }}<br />
-        {{ library.openingHours }} · {{ library.contacts }}
+        <div><strong>{{ library.name }}</strong><div class="muted">{{ library.address }} · {{ library.openingHours }}</div></div>
+        <span class="muted">{{ library.contacts }}</span>
       </li>
     </ul>
+    </section>
   </main>
 </template>

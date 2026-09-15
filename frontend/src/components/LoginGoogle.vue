@@ -1,74 +1,75 @@
 <script setup>
-    import { ref, onMounted } from 'vue'
-    import { loggedUser, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
+import { ref, onMounted } from 'vue'
+import { loggedUser, setLoggedUser } from '../states/loggedUser.js'
 
-    const VITE_API_HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
-    const API_URL = VITE_API_HOST+`/api/v1`
+const HOST = import.meta.env.VITE_API_HOST || 'http://localhost:8080'
+const API_URL = `${HOST}/api/v1`
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const googleLoginBtn = ref(null)
+const emit = defineEmits(['login'])
 
-    const VITE_GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+async function myLogin(googleToken) {
+  try {
+    const response = await fetch(`${API_URL}/authentications`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ googleToken })
+    })
+    const data = await response.json()
+    if (!response.ok) throw new Error(data.message || 'Google authentication failed')
+    setLoggedUser(data)
+    emit('login', loggedUser)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
+function handleCredentialResponse(response) {
+  if (response.credential) myLogin(response.credential)
+}
 
-    function myLogin( googleToken ) {
-        fetch(API_URL+'/authentications', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify( { googleToken: googleToken } ),
-        })
-        .then((resp) => resp.json()) // Transform the data into json
-        .then(function(data) { // Here you get the data to modify as you please
-            setLoggedUser(data)
-            // loggedUser.token = data.token;
-            // loggedUser.email = data.email;
-            // loggedUser.id = data.id;
-            // loggedUser.self = data.self;
-            emit('login', loggedUser)
-            return;
-        })
-        .catch( error => console.error(error) ); // If there is any error you will catch them here
+onMounted(() => {
+  if (!GOOGLE_CLIENT_ID) return
 
-    };
+  const initializeGoogle = () => {
+    if (!window.google?.accounts?.id || !googleLoginBtn.value) return
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCredentialResponse
+    })
+    window.google.accounts.id.renderButton(googleLoginBtn.value, {
+      text: 'signin_with',
+      size: 'large',
+      width: 220,
+      theme: 'outline',
+      logo_alignment: 'left'
+    })
+  }
 
-    const googleLoginBtn = ref(null);
+  if (window.google?.accounts?.id) {
+    initializeGoogle()
+    return
+  }
 
-    onMounted( () => {
+  const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]')
+  if (existingScript) {
+    existingScript.addEventListener('load', initializeGoogle, { once: true })
+    return
+  }
 
-        // https://developers.google.com/identity/gsi/web/reference/js-reference?hl=it
-        
-        let google_gsi_client = document.createElement('script');
-        google_gsi_client.setAttribute('src', 'https://accounts.google.com/gsi/client');
-        document.head.appendChild(google_gsi_client);
-        
-        window.onload = function () {
-            google.accounts.id.initialize({
-                client_id: VITE_GOOGLE_CLIENT_ID,
-                callback: handleCredentialResponse,
-                // login_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
-            });
-            google.accounts.id.renderButton(
-                googleLoginBtn.value, {
-                    text: 'signin_with', // or 'signup_with' | 'continue_with' | 'signin'
-                    size: 'large', // or 'small' | 'medium'
-                    width: '366', // max width 400
-                    theme: 'outline', // or 'filled_black' |  'filled_blue'
-                    logo_alignment: 'left' // or 'center'
-                }
-            );
-            google.accounts.id.prompt(); // also display the One Tap dialog
-        };
-
-    });
-    
-    function handleCredentialResponse( response ) {
-        console.log(response);
-        if (response.credential) {
-            myLogin( response.credential );
-        }
-    }
-
+  const googleScript = document.createElement('script')
+  googleScript.src = 'https://accounts.google.com/gsi/client'
+  googleScript.async = true
+  googleScript.defer = true
+  googleScript.addEventListener('load', initializeGoogle, { once: true })
+  document.head.appendChild(googleScript)
+})
 </script>
 
 <template>
-
-    <div ref="googleLoginBtn"></div>
-
+  <div ref="googleLoginBtn" aria-label="Accedi con Google"></div>
 </template>
+
+<style scoped>
+:deep(iframe) { max-width: 100%; }
+</style>

@@ -2,13 +2,37 @@
 
 ## Stato del piano
 
-- Stato: PROPOSTA — in attesa di approvazione umana
+- Stato: IMPLEMENTATO — direzione grafica e piano approvati; ultimo incremento committato per revisione
 - Data: 2026-09-15
 - Baseline di processo: D1-2026 v2.2, Feature Discovery Pack v1.2, D2 v1.1, D3 v1.1, Task & Agentic Implementation Plan v1.1
-- Repository analizzato: branch `main`, commit corrente `b33f735`
+- Repository analizzato: branch `main`, commit corrente `89124e9` (`feat: refresh frontend quiet operations UI`)
 - Vincolo: nessun codice applicativo verrà modificato prima dell'approvazione di questo piano e delle specifiche operative della feature interessata.
 - Decisioni umane ricevute: prenotazioni deferred; proroga operatore +30 giorni; storico prestiti persistente; ruoli user/operator; CRUD catalogo riservato all'operatore; login locale/Google, notifiche e RNF D1 confermati.
 - Decisioni tecniche ricevute: dataset biblioteche locale; notifiche locali persistenti senza email; CLI/seed per il primo operatore; `mongodb-memory-server` come database temporaneo isolato per i test.
+- Decisione visuale ricevuta: variante 3 “Quiet Operations” per il redesign del frontend.
+
+## 0.1 Piano implementativo FEAT-09 — Quiet Operations
+
+### File previsti
+
+- `frontend/src/assets/base.css`: token colore, tipografia, spaziatura, focus e responsive baseline;
+- `frontend/src/App.vue`: shell applicativa, navigazione e gerarchia globale;
+- `frontend/src/views/*.vue`: titoli, toolbar, stati vuoti, layout e feedback coerenti;
+- `frontend/src/components/BooksTable.vue`: tabella catalogo, filtri e azioni;
+- `frontend/src/components/BooklendingsTable.vue`: tabella prestiti attivi/archiviati e badge stato;
+- `frontend/src/components/Login.vue`, `LoginGoogle.vue`: pannello di accesso coerente;
+- eventuali nuovi componenti frontend solo se riducono duplicazione e restano nel perimetro della specifica.
+
+### Sequenza
+
+1. Aggiornare o aggiungere test frontend disponibili per i vincoli di visibilità e stato;
+2. rifattorizzare il CSS condiviso e la shell senza modificare le chiamate API;
+3. riallineare progressivamente le viste e le tabelle;
+4. verificare build, test backend e prova manuale per i tre livelli di autenticazione.
+
+### Gate
+
+Gate: SUPERATO con approvazione umana. Le modifiche applicative sono state implementate e incluse nel commit `89124e9`.
 
 ## 1. Risultato dell'audit
 
@@ -19,8 +43,8 @@
 - API presenti: autenticazione, studenti, libri e prestiti; OpenAPI in `oas3.yaml`.
 - Frontend Vue 3/Vite con viste essenziali per libri e prestiti e login locale/Google.
 - Test Jest/Supertest presenti per applicazione, studenti, libri e prestiti.
-- Una sola specifica di feature formalizzata nel repository: `specs/US-07-return-book.md`.
-- Non risultano presenti gli artefatti di Feature Discovery, D2, D3, task backlog, verification record o configurazione OpenCode richiesta dalle nuove linee guida.
+- Sono presenti specifiche di feature e artefatti di Feature Discovery, inclusa `specs/FEAT-09-frontend-quiet-operations.md`.
+- Gli artefatti di processo e la configurazione OpenCode sono presenti nel repository; restano da completare eventuali verification record per feature non ancora formalizzate.
 - È presente solo `.opencode/config.example.json`: è un esempio di configurazione Vertex AI con `rulesFiles`, ma non contiene gli agenti, i comandi custom o i permessi conservativi richiesti dal workflow IS 2026. Non risulta presente un `opencode.json` attivo versionato nella root.
 
 ### Gap tecnici e di prodotto da gestire
@@ -35,7 +59,7 @@
 - Registrazione, proroga, ricerca biblioteche, storico prestiti, notifiche, cambio lingua e gestione completa del catalogo non sono implementati come feature coerenti con D1.
 - Il frontend espone operazioni amministrative (creazione/cancellazione libri) senza un controllo di ruolo e usa valori di autenticazione precompilati nel componente di login.
 - Il frontend non verifica sistematicamente gli errori HTTP, usa in alcuni casi il token nella query string e non dispone di una suite di test UI/e2e.
-- La suite backend non è riproducibile nell'ambiente corrente: `npm test -- --runInBand` fallisce per il rifiuto della connessione DNS a MongoDB Atlas e, in un test Supertest, per `listen EPERM`. Questo va risolto come attività di infrastruttura/test prima di poter dichiarare una feature verificata.
+- La suite backend è riproducibile con il database temporaneo isolato: `npm test -- --runInBand` è stata eseguita con esito positivo.
 
 ## 2. Gate di specifica prima dell'implementazione
 
@@ -93,7 +117,7 @@ Attività:
 
 Gate: `npm test` riproducibile e verde sulla baseline esistente.
 
-Stato: PARZIALMENTE AVVIATA. La suite è stata eseguita, ma resta bloccata dall'accesso a MongoDB Atlas e dal listener Supertest nell'ambiente corrente.
+Stato: COMPLETATA. La suite è eseguibile con il database temporaneo isolato e risulta verde.
 
 ### Fase A.1 — OpenCode e controllo agentico
 
@@ -211,7 +235,7 @@ File candidati:
 
 Attività:
 
-- non implementare prenotazioni, notifiche o integrazioni esterne finché `GAP-EASY-01` e i relativi contratti non sono approvati;
+- non implementare prenotazioni finché `GAP-EASY-01` resta deferred; le notifiche locali sono già incluse, mentre eventuali integrazioni esterne richiedono una specifica separata;
 - classificare RNF5 come capacità trasversale e definire catalogo messaggi/localizzazione;
 - definire external systems e failure behaviour in D2/D3 prima dell'integrazione.
 

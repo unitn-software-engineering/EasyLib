@@ -1,11 +1,10 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { loggedUser } from '../states/loggedUser.js'
-import { books, fetchBooks, createBook, deleteBook } from '../states/books.js'
+import { fetchBooks } from '../states/books.js'
 
 const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
 const API_URL = HOST+`/api/v1`
-const BOOKS_URL = API_URL+'/books'
 const LENDINGS_URL = API_URL+'/booklendings'
 
 const booklendings = ref([])
@@ -53,11 +52,12 @@ async function deleteLending(lending) {
 </script>
 
 <template>
-  <span v-if="loggedUser.token && loggedUser.role === 'operator'"> Here are all booklendings: </span>
-  <span v-else-if="loggedUser.token"> Here are your booklendings, {{loggedUser.email}}: </span>
-  <span v-if="!loggedUser.token" style="color: red"> 'Please login to visualize booklendings!' </span>
-  <p v-if="loggedUser.token && booklendings.length === 0">No booklendings found.</p>
-  <table v-else-if="loggedUser.token">
+  <p class="muted lending-intro" v-if="loggedUser.token && loggedUser.role === 'operator'">Vista completa: prestiti di tutti gli utenti.</p>
+  <p class="muted lending-intro" v-else-if="loggedUser.token">I tuoi prestiti, {{loggedUser.email}}.</p>
+  <p class="empty-state surface-panel" v-if="!loggedUser.token">Accedi per visualizzare i prestiti.</p>
+  <p class="empty-state surface-panel" v-else-if="booklendings.length === 0">Nessun prestito trovato.</p>
+  <div class="surface-panel responsive-table" v-else>
+  <table>
     <thead>
       <tr>
         <th>Book</th>
@@ -75,13 +75,15 @@ async function deleteLending(lending) {
         <td>{{ lending.student?.email || 'User no longer available' }}</td>
         <td>{{ formatDate(lending.start_date) }}</td>
         <td>{{ formatDate(lending.end_date) }}</td>
-        <td>{{ lending.status === 'returned' ? 'Returned' : 'Active' }}</td>
+        <td><span :class="['status-badge', { returned: lending.status === 'returned' }]">{{ lending.status === 'returned' ? 'Restituito' : 'Attivo' }}</span></td>
         <td>{{ formatDate(lending.returnedAt) }}</td>
         <td>
           <button v-if="lending.status !== 'returned'" @click="deleteLending(lending)">Return</button>
-          <span v-else>Archived</span>
+          <span class="muted" v-else>Archiviato</span>
         </td>
       </tr>
     </tbody>
   </table>
+  </div>
 </template>
+<style scoped>.lending-intro { margin: -14px 0 18px; }</style>
