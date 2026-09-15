@@ -8,6 +8,7 @@
 - Repository analizzato: branch `main`, commit corrente `b33f735`
 - Vincolo: nessun codice applicativo verrà modificato prima dell'approvazione di questo piano e delle specifiche operative della feature interessata.
 - Decisioni umane ricevute: prenotazioni deferred; proroga operatore +30 giorni; storico prestiti persistente; ruoli user/operator; CRUD catalogo riservato all'operatore; login locale/Google, notifiche e RNF D1 confermati.
+- Decisioni tecniche ricevute: dataset biblioteche locale; notifiche locali persistenti senza email; CLI/seed per il primo operatore; `mongodb-memory-server` come database temporaneo isolato per i test.
 
 ## 1. Risultato dell'audit
 

@@ -5,6 +5,7 @@ import Login from '@/components/Login.vue'
 import LoginGoogle from '@/components/LoginGoogle.vue'
 
 import { ref, onMounted } from 'vue'
+import { loggedUser } from './states/loggedUser.js'
 
 </script>
 
@@ -17,7 +18,10 @@ import { ref, onMounted } from 'vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/books">Books</RouterLink>
-        <RouterLink to="/booklendings">Booklendings</RouterLink>
+      <RouterLink to="/booklendings">Booklendings</RouterLink>
+      <RouterLink to="/libraries">Libraries</RouterLink>
+      <RouterLink to="/notifications">Notifications</RouterLink>
+      <RouterLink v-if="loggedUser.role === 'operator'" to="/users">Users</RouterLink>
       </nav>
       
       <Login /> <LoginGoogle />

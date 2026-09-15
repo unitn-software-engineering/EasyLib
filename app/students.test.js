@@ -57,4 +57,8 @@ describe('GET /api/v1/students/me', () => {
     expect(user).toBeDefined();
     expect(user.email).toBe('John@mail.com');
   });
+
+  test('GET /api/v1/students requires an operator token', async () => {
+    await request(app).get('/api/v1/students').expect(401);
+  });
 });

@@ -32,8 +32,10 @@ router.post('', async function(req, res) {
 	var user = {};
 
 	if ( req.body.googleToken ) {
-		const payload = await verify( req.body.googleToken ).catch(console.error);
-		console.log(payload);
+		const payload = await verify(req.body.googleToken).catch(() => undefined);
+		if (!payload?.email) {
+			return res.status(401).json({ success: false, message: 'Authentication failed. Invalid Google token.' });
+		}
 
 		user = await Student.findOne({ email: payload['email'] }).exec();
 		if ( ! user ) {
@@ -49,9 +51,10 @@ router.post('', async function(req, res) {
 		
 	}
 	else {
+		const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
 		// find the user in the local db
 		user = await Student.findOne({
-			email: req.body.email
+			email
 		}).exec();
 	
 		// local user not found

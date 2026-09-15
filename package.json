@@ -17,7 +17,10 @@
     "show-db-url": "dotenv -p DB_URL",
     "mongosh": "dotenv -- sh -c 'mongosh $DB_URL '",
     "clearBooklendings": "dotenv -- sh -c 'mongosh $DB_URL --eval \"db.booklendings.deleteMany({})\"'",
-    "clearBooks": "node ./scripts/clearBooks.js"
+    "clearBooks": "node ./scripts/clearBooks.js",
+    "create-operator": "node ./scripts/createOperator.js",
+    "cleanup-orphaned-booklendings": "node ./scripts/cleanupOrphanedBooklendings.js",
+    "seed-books": "node ./scripts/seedBooks.js"
   },
   "repository": {
     "type": "git",
@@ -43,6 +46,7 @@
     "dotenv-cli": "^11.0.0",
     "gcp-metadata": "^5.3.0",
     "jest": "^29.7.0",
+    "mongodb-memory-server": "^11.2.0",
     "supertest": "^7.1.4"
   },
   "engines": {

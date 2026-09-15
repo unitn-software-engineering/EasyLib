@@ -4,12 +4,20 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import app from './app.js';
 import Booklending from './models/booklending.js';
+import Notification from './models/notification.js';
 
 const studentId = '507f1f77bcf86cd799439011';
 const lendingId = '507f1f77bcf86cd799439012';
 const userToken = jwt.sign({ email: 'user@easylib.test', id: studentId, role: 'user' }, process.env.SUPER_SECRET);
 
 describe('Booklending API', () => {
+  beforeAll(() => {
+    jest.spyOn(Notification, 'create').mockResolvedValue({});
+  });
+
+  afterAll(() => {
+    Notification.create.mockRestore();
+  });
   test('POST without a student returns 400', async () => {
     await request(app).post('/api/v1/booklendings').set('x-access-token', userToken).send({})
       .expect(400, { error: 'Student not specified' });

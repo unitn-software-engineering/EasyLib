@@ -1,6 +1,7 @@
 // https://vuejs.org/guide/scaling-up/state-management.html#simple-state-management-with-reactivity-api
 
 import { reactive, ref } from 'vue'
+import { loggedUser } from './loggedUser.js'
 
 const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
 const API_URL = HOST+`/api/v1`
@@ -23,7 +24,10 @@ async function createBook(bookData) {
     const payload = typeof bookData === 'string' ? { title: bookData } : bookData;
     await fetch(BOOKS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': loggedUser.token
+        },
         body: JSON.stringify(payload),
     });
     fetchBooks();
@@ -32,7 +36,10 @@ async function createBook(bookData) {
 async function deleteBook(book) {
     await fetch(HOST+book.self, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': loggedUser.token
+        }
     })
     fetchBooks()
 };
@@ -50,4 +57,4 @@ async function takeBook(book) {
 
 
 
-export { books, fetchBooks, createBook, deleteBook } 
+export { books, fetchBooks, createBook, deleteBook }

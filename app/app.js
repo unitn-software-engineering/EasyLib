@@ -6,6 +6,8 @@ import tokenChecker from './tokenChecker.js';
 import students from './students.js';
 import books from './books.js';
 import booklendings from './booklendings.js';
+import notifications from './notifications.js';
+import libraries from './libraries.js';
 import { fileURLToPath } from 'url';
 import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
@@ -92,6 +94,7 @@ app.use('/api/v1/authentications', authentication);
 // a valid token must be provided in the request
 app.use('/api/v1/booklendings', tokenChecker);
 app.use('/api/v1/students/me', tokenChecker);
+app.use('/api/v1/notifications', tokenChecker);
 
 
 
@@ -102,6 +105,8 @@ app.use('/api/v1/students/me', tokenChecker);
 app.use('/api/v1/books', books);
 app.use('/api/v1/students', students);
 app.use('/api/v1/booklendings', booklendings);
+app.use('/api/v1/notifications', notifications);
+app.use('/api/v1/libraries', libraries);
 
 
 

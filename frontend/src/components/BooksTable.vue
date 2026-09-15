@@ -96,7 +96,7 @@ function takeBook(book) {
     </div>
   </div>
 
-  <div style="margin-bottom: 2rem;">
+  <div v-if="loggedUser.role === 'operator'" style="margin-bottom: 2rem;">
     <h2>➕ Insert a New Book</h2>
     <form @submit.prevent="createBookButton" style="display: flex; flex-direction: column; gap: 0.5rem; max-width: 400px;">
       <input v-model="title" placeholder="Title (required)" required />
@@ -120,7 +120,7 @@ function takeBook(book) {
       <div style="margin-top: 0.3rem;">
         <button @click="takeBook(book)">TAKE</button>
         &nbsp;
-        <button @click="deleteBookButton(book)">DELETE</button>
+        <button v-if="loggedUser.role === 'operator'" @click="deleteBookButton(book)">DELETE</button>
       </div>
     </li>
   </ul>

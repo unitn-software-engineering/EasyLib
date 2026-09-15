@@ -67,6 +67,9 @@ paths:
         Gets the list of students.
         It is possible to show students by their role /students?role={role}
       summary: View all students
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       parameters:
         - in: query
           name: role
@@ -103,6 +106,29 @@ paths:
               schema:
                 type: string
               description: Link to the newly created student.
+  /students/{id}:
+    delete:
+      summary: Delete a student and related lendings
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Student, lendings and local notifications deleted
+        '400':
+          description: Invalid student identifier
+        '401':
+          description: Authentication required
+        '403':
+          description: Operator role required
+        '404':
+          description: Student not found
 
   /books:
     get:
@@ -319,6 +345,66 @@ paths:
         '409':
           description: Lending is not active
 
+  /libraries:
+    get:
+      summary: Search libraries in the local dataset
+      parameters:
+        - in: query
+          name: municipality
+          schema:
+            type: string
+        - in: query
+          name: service
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching libraries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Library'
+
+  /notifications:
+    get:
+      summary: List local notifications
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
+      responses:
+        '200':
+          description: Notifications for the authenticated user
+        '400':
+          description: Invalid student identifier
+        '401':
+          description: Authentication required
+
+  /notifications/{id}/read:
+    patch:
+      summary: Mark a local notification as read
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Notification marked as read
+        '400':
+          description: Invalid notification identifier
+        '401':
+          description: Authentication required
+        '403':
+          description: Notification belongs to another user
+        '404':
+          description: Notification not found
+
 components:
 
   securitySchemes:
@@ -430,3 +516,17 @@ components:
             The booklending is not overdue if the end date is in the future and the status is 'active'.
             The booklending is not overdue if the status is 'expired'.
             The number of days is calculated as the difference between the current date and the end date.
+
+    Library:
+      type: object
+      required: [id, name, municipality, address, openingHours, contacts, services]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        municipality: { type: string }
+        address: { type: string }
+        openingHours: { type: string }
+        contacts: { type: string }
+        services:
+          type: array
+          items: { type: string }

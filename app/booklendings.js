@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import Booklending from './models/booklending.js';
 import Student from './models/student.js';
 import Book from './models/book.js';
+import Notification from './models/notification.js';
 import { canAccessStudent, isOperator, requireOperator } from './authorization.js';
 
 const router = express.Router();
@@ -68,6 +69,10 @@ router.post('', async (req, res) => {
     const lending = await new Booklending({
         student: studentId, book: bookId, start_date: startDate, end_date: endDate, status: 'active'
     }).save();
+    await Notification.create({
+        student: studentId, type: 'loan_created',
+        message: `Prestito creato. Scadenza: ${endDate.toISOString()}`
+    });
     res.location('/api/v1/booklendings/' + lending.id).status(201).send();
 });
 
@@ -82,6 +87,7 @@ router.delete('/:id', async (req, res) => {
     lending.status = 'returned';
     lending.returnedAt = new Date();
     await lending.save();
+    await Notification.create({ student: lending.student, type: 'loan_returned', message: 'Libro restituito correttamente.' });
     res.status(204).send();
 });
 
@@ -96,6 +102,7 @@ router.patch('/:id/extension', requireOperator, async (req, res) => {
     endDate.setDate(endDate.getDate() + LOAN_DAYS);
     lending.end_date = endDate;
     await lending.save();
+    await Notification.create({ student: lending.student, type: 'loan_extended', message: `Prestito prorogato. Nuova scadenza: ${endDate.toISOString()}` });
     res.status(200).json({ self: '/api/v1/booklendings/' + lending.id, end_date: lending.end_date });
 });
 

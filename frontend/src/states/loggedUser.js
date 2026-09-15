@@ -6,7 +6,8 @@ const loggedUser = reactive({
     token: undefined,
     email: undefined,
     id: undefined,
-    self: undefined
+    self: undefined,
+    role: undefined
 })
 
 function setLoggedUser (data) {
@@ -14,6 +15,7 @@ function setLoggedUser (data) {
     loggedUser.email = data.email;
     loggedUser.id = data.id;
     loggedUser.self = data.self;
+    loggedUser.role = data.role || 'user';
 }
 
 function clearLoggedUser () {
@@ -21,6 +23,7 @@ function clearLoggedUser () {
     loggedUser.email = undefined;
     loggedUser.id = undefined;
     loggedUser.self = undefined;
+    loggedUser.role = undefined;
 }
 
-export { loggedUser, setLoggedUser, clearLoggedUser } 
+export { loggedUser, setLoggedUser, clearLoggedUser }

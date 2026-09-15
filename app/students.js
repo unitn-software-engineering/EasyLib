@@ -1,6 +1,11 @@
 import express from 'express';
 import Student from './models/student.js'; // get our mongoose model
+import mongoose from 'mongoose';
+import Booklending from './models/booklending.js';
+import Notification from './models/notification.js';
 import { hashPassword } from './security/password.js';
+import tokenChecker from './tokenChecker.js';
+import { requireOperator } from './authorization.js';
 const router = express.Router();
 
 
@@ -15,12 +20,13 @@ router.get('/me', async (req, res) => {
 
     res.status(200).json({
         self: '/api/v1/students/' + student.id,
+        id: String(student.id),
         email: student.email,
         role: student.role || 'user'
     });
 });
 
-router.get('', async (req, res) => {
+router.get('', tokenChecker, requireOperator, async (req, res) => {
     let students;
 
     if (req.query.email)
@@ -32,12 +38,28 @@ router.get('', async (req, res) => {
     students = students.map( (entry) => {
         return {
             self: '/api/v1/students/' + entry.id,
+            id: String(entry.id),
             email: entry.email,
             role: entry.role || 'user'
         }
     });
 
     res.status(200).json(students);
+});
+
+router.delete('/:id', tokenChecker, requireOperator, async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid student ID' });
+    }
+
+    const student = await Student.findById(id).exec();
+    if (!student) return res.status(404).send();
+
+    await Booklending.deleteMany({ student: id }).exec();
+    await Notification.deleteMany({ student: id }).exec();
+    await Student.deleteOne({ _id: id }).exec();
+    res.status(204).send();
 });
 
 router.post('', async (req, res) => {
