@@ -42,6 +42,8 @@ a:hover { text-decoration: underline; }
 .nav-icon { width: 20px; color: currentColor; font-size: 15px; text-align: center; }
 .side-tip { margin: 0 8px; padding: 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: rgba(251, 252, 250, .72); color: var(--color-muted); font-size: 11px; line-height: 1.45; }
 .side-tip strong { display: block; margin-bottom: 4px; color: var(--color-heading); font-size: 12px; }
+.github-link { display: flex; align-items: center; gap: 10px; margin: 22px 10px 0; color: var(--color-muted); font-size: 12px; font-weight: 750; }
+.github-link:hover { color: var(--color-primary-dark); text-decoration: none; }
 .main-column { min-width: 0; }
 .top-bar { display: flex; min-height: 72px; align-items: center; justify-content: flex-end; gap: 16px; padding: 14px 5vw; border-bottom: 1px solid var(--color-border); background: rgba(251, 252, 250, .86); }
 .auth-area { display: flex; align-items: center; gap: 12px; color: var(--color-muted); font-size: 12px; }

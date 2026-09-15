@@ -21,6 +21,7 @@ import { loggedUser } from './states/loggedUser.js'
       </nav>
       <p class="side-label">Stato</p>
       <div class="side-tip"><strong>{{ loggedUser.token ? 'Sessione attiva' : 'Accesso richiesto' }}</strong>{{ loggedUser.token ? 'Spazio biblioteca pronto.' : 'Accedi per gestire i tuoi prestiti.' }}</div>
+      <a class="github-link" href="https://github.com/unitn-software-engineering/EasyLib" target="_blank" rel="noopener noreferrer" aria-label="Apri il repository EasyLib su GitHub"><span class="nav-icon">◉</span> GitHub</a>
     </aside>
     <div class="main-column">
       <header class="top-bar"><div class="auth-area"><Login /><span class="google-login"><LoginGoogle /></span></div></header>

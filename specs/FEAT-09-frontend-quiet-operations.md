@@ -37,6 +37,7 @@ Rendere EasyLib più sobrio, leggibile e orientato alle attività quotidiane del
 - AC-05: i controlli interattivi hanno focus visibile, etichette comprensibili e contrasto adeguato;
 - AC-06: la build frontend termina correttamente e i test backend non subiscono regressioni;
 - AC-07: il redesign non modifica il comportamento delle chiamate API esistenti.
+- AC-08: la shell espone un collegamento riconoscibile al repository GitHub del progetto, apribile in una nuova scheda.
 
 ## Evidenze richieste
 
